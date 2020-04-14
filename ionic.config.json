@@ -1,0 +1,7 @@
+{
+  "name": "ionic-firebase-auth-starter",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

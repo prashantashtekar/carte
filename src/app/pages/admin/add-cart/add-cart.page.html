@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Cart</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-card>
+    <ion-card-header center>
+      <ion-badge color="warning">Toatl Carts : {{cartList.length}}</ion-badge>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="createCartForm" novalidate>
+        <ion-item>
+          <ion-input formControlName="cartName" placeholder="Cart name" type="text"></ion-input>
+          <div class="item-note" item-end>
+            <ion-button color="success" icon-only [disabled]="createCartForm.invalid" (click)="createCart()">
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-item>
+        <div>
+          <ng-container *ngFor="let validation of validation_messages.cartName">
+            <div class="error-message"
+              *ngIf="createCartForm.get('cartName').hasError(validation.type) && (createCartForm.get('cartName').dirty || createCartForm.get('cartName').touched)">
+              {{ validation.message }}
+            </div>
+          </ng-container>
+        </div>
+      </form>
+
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-list>
+    <ion-item *ngFor="let cart of cartList; let i = index">
+      {{cart.name}}
+      <div class="item-note" slot="end">
+        <ion-button color="light" icon-only clear (click)="updateCart(cart)">
+          <ion-icon name="create" (click)="updateCart(cart)"></ion-icon>
+        </ion-button>
+        <ion-button color="light" icon-only (click)="deleteCart(cart)">
+          <ion-icon color="danger" name="trash" (click)="deleteCart(cart)"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

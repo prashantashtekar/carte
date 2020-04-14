@@ -1,0 +1,15 @@
+.auth-options {
+    font-size: small;
+}
+
+.error-message {
+    font-size: small;
+    color: var(--ion-color-danger);
+}
+
+.vertical-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+  }

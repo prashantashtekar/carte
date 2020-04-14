@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Cart User</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form #myForm="ngForm" (ngSubmit)="register()">
+
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">
+          First Name
+        </ion-label>
+        <ion-input id="firstName" type="text" [(ngModel)]="cartUserInfo.firstName" name="firstName" #firstName="ngModel"
+          required [ngModelOptions]="{standalone: true}">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">
+          Last Name
+        </ion-label>
+        <ion-input [(ngModel)]="cartUserInfo.lastName" name="lastName" required #lastName="ngModel"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">
+          Email
+        </ion-label>
+        <br />
+        <ion-input [readonly]="isEdit" type="email" id="email" [(ngModel)]="cartUserInfo.email" name="email"
+          #email="ngModel" required>
+        </ion-input>
+      </ion-item>
+      <ion-item *ngIf="!isEdit">
+        <ion-label position="floating">
+          Password
+        </ion-label><br />
+        <ion-input type="password" id="pass" [(ngModel)]="password" name="pass" #pass="ngModel" required></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!isEdit">
+        <ion-label position="floating">
+          Confirm Password
+        </ion-label>
+        <ion-input id="cPassword" [(ngModel)]="confirmPassword" name="cPassword" #cPassword="ngModel" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">
+          Mobile
+        </ion-label>
+        <ion-input id="phoneNumber" [(ngModel)]="cartUserInfo.phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
+          required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">
+          Address
+        </ion-label>
+        <ion-input id="address" [(ngModel)]="cartUserInfo.address" name="address" #address="ngModel" required>
+        </ion-input>
+      </ion-item>
+      <ion-item *ngIf="cartList.length>0">
+        <ion-label position="floating">
+          Assign Cart
+        </ion-label>
+        <ion-select (ionChange)="onChange()" item-end [(ngModel)]="cartUserInfo.cartId" required name="cartModl" #cartModl="ngModel" id="">
+          <ion-select-option *ngFor="let cart of cartList" [value]="cart.id">
+            {{ cart.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-button [disabled]="!myForm.form.valid" type="submit" expand="block" size="large" class="b">
+      CONTINUE
+    </ion-button>
+  </form>
+</ion-content>
+<ion-footer>
+
+</ion-footer>

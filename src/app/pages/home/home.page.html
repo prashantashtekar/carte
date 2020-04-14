@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+    <ion-title>
+      Cart E
+    </ion-title>
+    <!-- <ion-buttons slot="end">
+      <ion-icon name="contact" color="primary" size="large" (click)="navigateToProfile()" class="right-padding">
+      </ion-icon>
+    </ion-buttons> -->
+  </ion-toolbar>
+</ion-header>
+
+ 
+  <ion-content padding>
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <h3 class="ion-text-center ion-margin-top" color="primary">Welcome to Swapnapurtee</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          Your Registered EmailID : {{userEmail}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-tabs>
+    
+    <ion-tab-bar slot="bottom">
+    
+    <ion-tab-button tab="home">
+    
+    <ion-icon name="home"></ion-icon>
+    
+    <ion-label>Home</ion-label>
+    
+    </ion-tab-button>
+    
+    <ion-tab-button tab="profile">
+    
+    <ion-icon name="person"></ion-icon>
+    
+    <ion-label>Profile</ion-label>
+    
+    </ion-tab-button>
+    
+    </ion-tab-bar>
+    
+    </ion-tabs>
+    
+    </ion-content>
+

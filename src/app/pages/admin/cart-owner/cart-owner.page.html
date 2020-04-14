@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cart Owners</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button icon-only (click)="add()">
+        <ion-icon color="secondary" name="add-circle" style="zoom:2.0;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let user of cartUsersList; let i = index">
+    <ion-card-header>
+      <h3>{{user.firstName}} {{user.lastName}}</h3>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{user.phoneNumber}}</p>
+      <p>{{user.address}}</p>
+      <p>{{user.cartName}}</p>
+      <div class="item-note" slot="end">
+        <ion-button color="light" icon-only clear (click)="updateCartUser(user)" size="small">
+          <ion-icon name="create" (click)="updateCart(user)"></ion-icon>Edit
+        </ion-button>
+        <ion-button color="light" icon-only (click)="deleteCartUser(user.uid)" size="small">
+          <ion-icon color="danger" name="trash"></ion-icon>Delete
+        </ion-button>
+        <ion-button *ngIf="user.isActive" (click)="approveMember(user.uid)" color="success" name="checkmark-circle"
+        size="small">Active</ion-button>
+        <ion-button *ngIf="!user.isActive" (click)="dissapproveMember(user.uid)" color="danger" name="close-circle"
+        size="small">Deactive</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+  </ion-content>
