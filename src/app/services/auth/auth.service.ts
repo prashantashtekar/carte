@@ -28,8 +28,9 @@ export class AuthService {
     this.user$ = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          console.log("User already logged in: ", user);
-          let userDoc = this.afs.doc<User>(`users/${user.uid}`);
+          //console.log("User already logged in: ", user);
+          //let userDoc = this.afs.doc<User>(`users/${user.uid}`);
+          let userDoc = this.afs.collection('users').doc(user.uid);
           return userDoc.valueChanges();
         } else {
           console.log("No user logged in.");
@@ -103,14 +104,16 @@ export class AuthService {
       roleName: user.roleName,
       cartId: user.cartId,
       cartName: user.cartName,
-      isActive: user.isActive
+      isActive: user.isActive,
+      latitude: "",
+      longitude: ""
     };
     let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${uid}`);
     userDoc.set(newUser);
   }
 
   updateCartUserDocumentInFirebase(user: User) {
-   let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${user.uid}`);
+    let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${user.uid}`);
     userDoc.update({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -139,7 +142,16 @@ export class AuthService {
     const newUser: User = {
       uid: uid,
       email: email,
-      roleName: 'Customer'
+      roleName: 'Customer',
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+      cartId: "",
+      cartName: "",
+      isActive: true,
+      latitude: "",
+      longitude: ""
     };
     let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${uid}`);
     userDoc.set(newUser);

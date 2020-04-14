@@ -5,36 +5,52 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomePage } from './home.page';
-const routes: Routes = [{
-  path: "",
-  component: HomePage,
-  children: [
-    //{
-  //   path: "home",
-  //   children: [
-  //     {
-  //       path: "",
-  //       loadChildren: "./home/home.module#HomePageModule"
-  //     }
-  //   ]
-  // },
+import { MapsPage } from './maps/maps.page';
+import { ProductsPage } from './products/products.page';
+
+const routes: Routes = [
   {
-    path: "profile",
+    path: "",
+    component: HomePage,
     children: [
       {
+        path: "map",
+        children: [
+          {
+            path: "",
+            loadChildren: "./maps/maps.module#MapsPageModule"
+          }
+        ]
+      },
+      {
+
+        path: "products",
+        children: [
+          {
+            path: "",
+            loadChildren: "./products/products.module#ProductsPageModule"
+          }
+        ]
+      },
+      {
         path: "",
-        loadChildren: "./profile/profile.module#ProfilePageModule"
+        redirectTo: "map",
+        pathMatch: "full"
       }
     ]
   },
   {
     path: "",
-    redirectTo: "home",
+    redirectTo: "map",
     pathMatch: "full"
   }
-  ]
-}
 ];
+
+
+
+
+
+
 @NgModule({
   imports: [
     CommonModule,

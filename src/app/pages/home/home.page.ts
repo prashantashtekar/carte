@@ -20,13 +20,8 @@ import { User } from 'firebase';
 })
 export class HomePage implements OnInit {
 
-  public userEmail: string = "";
-  locationCoords: any;
-  timetest: any;
-  currentPos: Geoposition;
 
-  userProfile: User = null;
-  
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -40,17 +35,20 @@ export class HomePage implements OnInit {
     private menu: MenuController,
   ) {
 
-    this.locationCoords = {
-      latitude: "",
-      longitude: "",
-      accuracy: "",
-      timestamp: ""
-    }
-    this.timetest = Date.now();
+    
   }
 
   ngOnInit() {
     this.menu.enable(true);
+
+    console.log("Home page on init");
+    console.log("Home page on init");
+    console.log("Home page on init");
+    console.log("Home page on init");
+    console.log("Home page on init");
+    //Tabs Implementation
+    // https://ovpv.me/add-tabs-ionic-4/
+
     // let isLocationEnabled = this.locationService.locationStatus().then(data=>{
     //   console.log("Location Enabled : " + data);    
     // });
@@ -73,11 +71,7 @@ export class HomePage implements OnInit {
     //   console.log("error : " + err.message);
     //  // alert("Location not enabled")
     // });
-    this.authService.user$.subscribe((user) => {
-      console.log('current user: ', user);
-      this.userProfile = user;
-      this.userEmail = this.userProfile.email;
-    });
+   
 
     // if (this.authService.userDetails()) {
     //   this.userEmail = this.authService.userDetails().email;
