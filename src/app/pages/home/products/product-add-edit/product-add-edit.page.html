@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>product-add-edit</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form #myForm="ngForm" (ngSubmit)="saveProduct()">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title color="secondary">ADD Products</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label stacked>
+            Name
+          </ion-label>
+          <ion-input [(ngModel)]="productInfo.name" name="name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>
+            Description
+          </ion-label>
+          <ion-input [(ngModel)]="productInfo.description" name="description"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>
+            Price
+          </ion-label>
+          <ion-input [(ngModel)]="productInfo.price" name="price"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+    <ion-button [disabled]="!myForm.form.valid" type="submit"  expand="block" size="large" class="b">
+      CONTINUE
+    </ion-button>
+  </ion-card>
+  </form>
+</ion-content>

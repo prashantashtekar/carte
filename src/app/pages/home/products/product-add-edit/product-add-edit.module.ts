@@ -5,15 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ProductsPage } from './products.page';
-import { ProductAddEditPage } from './product-add-edit/product-add-edit.page';
+import { ProductAddEditPage } from './product-add-edit.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: ProductsPage
-  },
-  { path: ':method/:id', component: ProductAddEditPage },
+    component: ProductAddEditPage
+  }
 ];
 
 @NgModule({
@@ -23,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ProductsPage,ProductAddEditPage]
+  declarations: [ProductAddEditPage]
 })
-export class ProductsPageModule {}
+export class ProductAddEditPageModule {}
