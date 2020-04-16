@@ -38,6 +38,15 @@ export class AddCartPage implements OnInit {
   async createCart() {
     const loading = await this.loadingCtrl.create();
     const cartName = this.createCartForm.value.cartName;
+    let cart = this.cartList.find(x=>x.name.toLowerCase() == cartName.toLowerCase());
+    if(cart != null) {
+      this.toastService.present({
+        message: "Cart name already exists!",
+        duration: 3000,
+        color: "danger"
+      });      
+      return;
+    }
     this.adminServices
       .addCart(cartName)
       .then(

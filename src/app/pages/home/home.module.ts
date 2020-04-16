@@ -14,12 +14,11 @@ const routes: Routes = [
         children: [
           {
             path: "",
-            loadChildren: "./maps/maps.module#MapsPageModule"
+            loadChildren: "./maps/maps.module#MapsPageModule"            
           }
         ]
       },
       {
-
         path: "products",
         children: [
           {
@@ -30,14 +29,14 @@ const routes: Routes = [
       },
       {
         path: "",
-        redirectTo: "map",
+        redirectTo: "../home/map",
         pathMatch: "full"
       }
     ]
   },
   {
     path: "",
-    redirectTo: "map",
+    redirectTo: "../home/map",
     pathMatch: "full"
   }
 ];

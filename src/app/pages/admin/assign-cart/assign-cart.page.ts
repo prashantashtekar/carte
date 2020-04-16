@@ -18,6 +18,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 export class AssignCartPage implements OnInit {
   cartUserInfo: User = new User();
   cartList: Cart[] = [];
+  cartUsersList: User[] = [];
   isEdit: boolean = false;
   public password: string = "";
   public confirmPassword: string = "";
@@ -44,10 +45,16 @@ export class AssignCartPage implements OnInit {
         this.cartUserInfo = res;
       });
     }
+    this.getCartUserList();
   }
   getCartList() {
     this.adminServices.getCarts().subscribe((res: Cart[]) => {
       this.cartList = res;
+    });
+  }
+  getCartUserList() {
+    this.adminServices.getCartUsers().subscribe((res) => {
+      this.cartUsersList = res;
     });
   }
 
@@ -61,13 +68,23 @@ export class AssignCartPage implements OnInit {
       this.cartUserInfo.roleName = "CartUser";
       this.cartUserInfo.isActive = true;
       if (this.password === this.confirmPassword) {
+        let cartUser = this.cartUsersList.find(x=>x.cartId == this.cartUserInfo.cartId);
+        if(cartUser != null) {
+          this.toastService.present({
+            message: "This cart is already assigned!",
+            duration: 3000,
+            color: "danger"
+          });
+          return;
+        }
+
         this.registrationProcessing();
 
         this.authService
           .registerCartUserWithEmail(this.cartUserInfo, this.password)
           .then(() => {
             this.registrationSuccess();
-            this.router.navigateByUrl("/home");
+            this.router.navigateByUrl("admin/cart-owner");
           })
           .catch(error => {
             console.log(error);
@@ -86,6 +103,16 @@ export class AssignCartPage implements OnInit {
     else
     {
       //Update
+      let cartU = this.cartUsersList.find(x=>x.cartId == this.cartUserInfo.cartId 
+        && x.email != this.cartUserInfo.email);
+        if(cartU != null) {
+          this.toastService.present({
+            message: "This cart is already assigned!",
+            duration: 3000,
+            color: "danger"
+          });
+          return;
+        }
       this.authService.updateCartUserDocumentInFirebase(this.cartUserInfo);
       this.registrationSuccess();
       this.router.navigateByUrl("admin/cart-owner");
@@ -115,7 +142,6 @@ export class AssignCartPage implements OnInit {
 
     this.alertService.present({
       header: "Registration Error",
-      subHeader: error.code,
       message: error.message,
       buttons: ["OK"]
     });
