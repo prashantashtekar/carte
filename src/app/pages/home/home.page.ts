@@ -11,7 +11,7 @@ import { LoadingService } from 'src/app/services/loading/loading.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { LocationService } from 'src/app/services/location/location.service';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
-import { User } from 'firebase';
+import { User } from 'src/app/interfaces/user';
 
 @Component({
   selector: "app-home",
@@ -20,8 +20,8 @@ import { User } from 'firebase';
 })
 export class HomePage implements OnInit {
 
-
-
+  userProfile: User = null;
+roleName:string=""
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -41,11 +41,14 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.menu.enable(true);
 
-    console.log("Home page on init");
-    console.log("Home page on init");
-    console.log("Home page on init");
-    console.log("Home page on init");
-    console.log("Home page on init");
+    this.authService.user$.subscribe((user) => {
+      console.log('current user: ', user);
+       this.userProfile = user;
+       this.roleName = user.roleName;
+      
+     });
+
+  
     //Tabs Implementation
     // https://ovpv.me/add-tabs-ionic-4/
 

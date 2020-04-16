@@ -12,10 +12,9 @@ import { BehaviorSubject, Observable, of } from "rxjs";
 })
 export class AuthService {
   user$: Observable<any>;
-
   private authState: any;
   public loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+  private currentUserSubject: BehaviorSubject<User>;
   constructor(
     public afAuth: AngularFireAuth,
     private zone: NgZone,
@@ -30,7 +29,7 @@ export class AuthService {
         if (user) {
           //console.log("User already logged in: ", user);
           //let userDoc = this.afs.doc<User>(`users/${user.uid}`);
-          let userDoc = this.afs.collection('users').doc(user.uid);
+          let userDoc = this.afs.collection('users').doc(user.uid);          
           return userDoc.valueChanges();
         } else {
           console.log("No user logged in.");
@@ -51,6 +50,10 @@ export class AuthService {
 
   get isAuthenticated(): boolean {
     return (this.authState !== null) ? true : false;
+  }
+
+  get currentUserValue(): User {
+    return this.currentUserSubject.value;
   }
   //PA-Added- to get user details
   userDetails() {

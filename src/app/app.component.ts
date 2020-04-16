@@ -21,7 +21,8 @@ export class AppComponent {
     {
       title: 'Administration',
       url: '/admin',
-      icon: 'settings'
+      icon: 'settings',
+      access: ['Admin', 'SuperAdmin'],
     },
     // {
     //   title: 'Change Password',
@@ -42,7 +43,7 @@ export class AppComponent {
   loggedIn = false;
   dark = false;
   userEmail: string;
-
+  roleName: string = "";
   constructor(
     private menu: MenuController,
     private platform: Platform,
@@ -69,10 +70,18 @@ export class AppComponent {
     this.initializeApp();
   }
   ngOnInit() {
-    this.authService.user$.subscribe((user) => {           
+
+
+    this.authService.user$.subscribe((user) => {
       this.userEmail = user.email;
+      this.roleName = user.roleName;
     });
   }
+
+  showMenu() {
+    return (this.roleName === 'SuperAdmin' || this.roleName === 'Admin')
+  }
+
   changePassword() {
     let emailAddress = this.userEmail
     this.authService.changePassword(emailAddress)
