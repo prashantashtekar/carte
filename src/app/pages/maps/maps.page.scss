@@ -1,0 +1,19 @@
+.map-canvas {
+    position: absolute;
+  
+    height: 100%;
+    width: 100%;
+  
+    background-color: transparent;
+  
+    opacity: 0;
+    transition: opacity 150ms ease-in;
+  }
+  
+  .show-map {
+    opacity: 1;
+  }
+  
+.text-center {
+  text-align: center !important;
+}
