@@ -12,6 +12,8 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { LocationService } from 'src/app/services/location/location.service';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { User } from 'src/app/interfaces/user';
+import { MapsPage } from '../maps/maps.page';
+import { ProductsPage } from '../products/products.page';
 
 @Component({
   selector: "app-home",
@@ -21,7 +23,7 @@ import { User } from 'src/app/interfaces/user';
 export class HomePage implements OnInit {
 
   userProfile: User = null;
-roleName:string=""
+  roleName: string = ""
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -35,7 +37,7 @@ roleName:string=""
     private menu: MenuController,
   ) {
 
-    
+
   }
 
   ngOnInit() {
@@ -43,12 +45,12 @@ roleName:string=""
 
     this.authService.user$.subscribe((user) => {
       console.log('current user: ', user);
-       this.userProfile = user;
-       this.roleName = user.roleName;
-      
-     });
+      this.userProfile = user;
+      this.roleName = user.roleName;
 
-  
+    });
+
+
     //Tabs Implementation
     // https://ovpv.me/add-tabs-ionic-4/
 
@@ -74,7 +76,7 @@ roleName:string=""
     //   console.log("error : " + err.message);
     //  // alert("Location not enabled")
     // });
-   
+
 
     // if (this.authService.userDetails()) {
     //   this.userEmail = this.authService.userDetails().email;
