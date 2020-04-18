@@ -17,26 +17,52 @@
       <!-- <img *ngIf="produto.img" [src]="produto.img" alt="" item-left class="product-thumb" />  -->
       <img item-left src="assets/imgs/food.png" class="product-thumb" scroll="false">
       <ion-label class="label-margin">
-        <h2 text-wrap>{{product.name}}</h2>
+        <h1 text-wrap>{{product.name}}</h1>
         <p>₹ {{product.price}}</p>
+        <div item-end>
+          <ion-button color="light" icon-only clear (click)="updateProduct(product)" size="small">
+            <ion-icon name="create" (click)="updateCart(product)"></ion-icon>
+          </ion-button>
+          <ion-button color="light" icon-only (click)="deleteProduct(product.id)" size="small">
+            <ion-icon color="danger" name="trash"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="product.isActive" (click)="approveProduct(product.id)" color="success"
+            name="checkmark-circle" size="small">Active</ion-button>
+          <ion-button *ngIf="!product.isActive" (click)="dissapproveProduct(product.id)" color="danger"
+            name="close-circle" size="small">Deactive</ion-button>
+
+            <ion-button *ngIf="product.isOutOfStock" (click)="isOutOfStockProduct(product.id)" color="success"
+            name="checkmark-circle" size="small">In Stock</ion-button>
+          <ion-button *ngIf="!product.isOutOfStock" (click)="isOutOfStockProduct(product.id)" color="danger"
+            name="close-circle" size="small">Out of Stock</ion-button>
+        </div>
       </ion-label>
-      <div item-end>
+      <!-- <div item-end>
         <ion-button color="light" icon-only clear (click)="updateProduct(product)" size="small">
           <ion-icon name="create" (click)="updateCart(product)"></ion-icon>
         </ion-button>
         <ion-button color="light" icon-only (click)="deleteProduct(product.id)" size="small">
           <ion-icon color="danger" name="trash"></ion-icon>
         </ion-button>
-      </div>
-      <div class="row">
-        <div item-end>
-          <ion-button *ngIf="product.isActive" (click)="approveProduct(product.id)" color="success"
-            name="checkmark-circle" size="small">Active</ion-button>
-          <ion-button *ngIf="!product.isActive" (click)="dissapproveProduct(product.id)" color="danger"
-            name="close-circle" size="small">Deactive</ion-button>
-        </div>
-      </div>
-
+      </div> -->
     </ion-item>
   </ion-list>
 </ion-content>
+<!-- <ion-footer>
+  <ion-list no-margin>
+    <ion-item no-padding>
+      <ion-label padding-left>
+        <strong>Final value: </strong>
+        <span>R$ 9999</span>
+      </ion-label>
+      <button item-end ion-button color="danger" (click)="request()" icon-left>
+        <ion-icon name="cart"></ion-icon>
+        Request
+      </button>
+      <button [disabled]="!finalValue" item-end ion-button color="danger" (click)="finalizarCompra()" icon-left>
+        <ion-icon name="cart"></ion-icon>
+        Purchase
+      </button> 
+    </ion-item>
+  </ion-list>
+</ion-footer> -->

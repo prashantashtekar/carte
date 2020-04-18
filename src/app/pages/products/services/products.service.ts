@@ -23,7 +23,7 @@ export class ProductsService {
       description: product.description,
       isActive: true,
       isOutOfStock: false,
-      price: "0",
+      price: product.price,
       cartUserId: product.cartUserId
     };
 

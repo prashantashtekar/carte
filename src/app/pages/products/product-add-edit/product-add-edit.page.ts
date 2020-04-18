@@ -48,9 +48,7 @@ export class ProductAddEditPage implements OnInit {
   saveProduct() {
     this.productInfo.cartUserId = this.userProfile.uid;
     if (!this.isEdit) {
-
       this.registrationProcessing();
-
       this.productService
         .addProduct(this.productInfo)
         .then(() => {

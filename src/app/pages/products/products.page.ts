@@ -26,7 +26,6 @@ export class ProductsPage implements OnInit {
     });
     
   }
-
   geProduct(uid) {
     this.productService.getProductsByUser(uid).subscribe((res) => {
       this.productList = res;
