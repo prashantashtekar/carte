@@ -7,20 +7,20 @@ import { IonicModule } from '@ionic/angular';
 
 import { ProductAddEditPage } from './product-add-edit.page';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: ProductAddEditPage
-  }
-];
+// const routes: Routes = [
+//   {
+//     path: '',
+//     component: ProductAddEditPage
+//   }
+// ];
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+   // RouterModule.forChild(routes)
   ],
-  declarations: [ProductAddEditPage]
+ // declarations: [ProductAddEditPage]
 })
 export class ProductAddEditPageModule {}

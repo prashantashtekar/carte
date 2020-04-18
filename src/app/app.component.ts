@@ -19,6 +19,12 @@ import { AlertService } from './services/alert/alert.service';
 export class AppComponent {
   appPages = [
     {
+      title: 'Home',
+      url: '/home/map',
+      icon: 'map',
+      access: ['CartUser', 'Customer','Admin', 'SuperAdmin'],
+    },
+    {
       title: 'Administration',
       url: '/admin',
       icon: 'settings',
