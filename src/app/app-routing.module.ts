@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'forgot-password', loadChildren: () => import('./pages/auth/forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule) },
   { path: 'user-profile', loadChildren: './pages/user-profile/user-profile.module#UserProfilePageModule' },
   { path: 'user-profile-modal', loadChildren: './pages/user-profile-modal/user-profile-modal.module#UserProfileModalPageModule' },
-  { path: 'admin', loadChildren: './pages/admin/admin.module#AdminPageModule' }, 
+  { path: 'admin', loadChildren: './pages/admin/admin.module#AdminPageModule' },   { path: 'history', loadChildren: './pages/history/history.module#HistoryPageModule' },
+
   // { path: 'product-add-edit', loadChildren: './pages/home/products/product-add-edit/product-add-edit.module#ProductAddEditPageModule' },
   // { path: 'customer-request', loadChildren: './pages/home/customer-request/customer-request.module#CustomerRequestPageModule' },
 
