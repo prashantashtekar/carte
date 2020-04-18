@@ -1,21 +1,16 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Products</ion-title>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-buttons slot="start">
-      <ion-menu-button autoHide="false"></ion-menu-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button icon-only (click)="add()">
-        <ion-icon color="secondary" name="add-circle" style="zoom:2.0;"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <h3 class="ion-text-center ion-margin-top" color="primary">Products</h3>
+        <ion-buttons slot="end">
+          <ion-button icon-only (click)="add()">
+            <ion-icon color="secondary" name="add-circle" style="zoom:2.0;"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>   
+  </ion-grid>
   <ion-card *ngFor="let product of productList; let i = index">
     <ion-card-header>
       <h3>{{product.name}}</h3>

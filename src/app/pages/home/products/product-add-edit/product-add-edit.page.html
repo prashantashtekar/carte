@@ -1,9 +1,3 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>product-add-edit</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <form #myForm="ngForm" (ngSubmit)="saveProduct()">
   <ion-card>
@@ -34,7 +28,7 @@
         </ion-item>
       </ion-list>
     </ion-card-content>
-    <ion-button [disabled]="!myForm.form.valid" type="submit"  expand="block" size="large" class="b">
+    <ion-button [disabled]="!myForm.form.valid" type="submit"  round>
       CONTINUE
     </ion-button>
   </ion-card>

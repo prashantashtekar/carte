@@ -4,40 +4,11 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HomePage } from './home.page';
+import { HomePageRoutingModule } from './home.router.module';
 const routes: Routes = [
   {
     path: "",
-    component: HomePage,
-    children: [
-      {
-        path: "map",
-        children: [
-          {
-            path: "",
-            loadChildren: "./maps/maps.module#MapsPageModule"            
-          }
-        ]
-      },
-      {
-        path: "products",
-        children: [
-          {
-            path: "",
-            loadChildren: "./products/products.module#ProductsPageModule"
-          }
-        ]
-      },
-      {
-        path: "",
-        redirectTo: "../home/map",
-        pathMatch: "full"
-      }
-    ]
-  },
-  {
-    path: "",
-    redirectTo: "../home/map",
-    pathMatch: "full"
+    component: HomePage
   }
 ];
 
@@ -46,9 +17,10 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    HomePageRoutingModule,
     RouterModule.forChild(routes)
+
   ],
   declarations: [HomePage],
-  exports: [RouterModule]
 })
 export class HomePageModule { }
