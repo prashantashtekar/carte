@@ -17,3 +17,32 @@
 .text-center {
   text-align: center !important;
 }
+
+.alert-checkbox-group {
+  overflow: auto !important;
+}
+
+
+//below css is not working, alert must show buttons in single row
+button.alert-button-group {
+  width: 33.33% !important;
+}
+
+.alert-button-group .button-inner {
+  -webkit-box-pack: center !important;
+  -webkit-justify-content: center !important;
+  -ms-flex-pack: center !important;
+  justify-content: center !important;
+}
+
+.alert-button-group-vertical {
+  -webkit-flex-direction: row !important;
+  -ms-flex-direction: row !important;
+  flex-direction: row !important;
+} 
+
+.alert-button-group-vertical.sc-ion-alert-md {
+  -webkit-flex-direction: row !important;
+  -ms-flex-direction: row !important;
+  flex-direction: row !important;
+}

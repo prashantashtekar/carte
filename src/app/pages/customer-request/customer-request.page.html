@@ -1,4 +1,4 @@
-<ion-content class="ion-padding">
+<ion-content class="padding-page">
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
@@ -6,5 +6,28 @@
       </ion-col>
     </ion-row>   
   </ion-grid>
-
+  <ion-card *ngFor="let request of requests; let i = index">
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-grid>
+          <ion-row>
+            <ion-col><ion-label>{{request.customerName}} {{request.customerPhoneNumber}}</ion-label></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><ion-label>{{request.dateRequested}}</ion-label></ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-note slot="end" [color]="getStatusClass(request.status)"><b>{{request.status | titlecase }}</b></ion-note>
+      </ion-item>
+            <ion-button size="small" color="primary" (click)="showProducts(request)">
+              <ion-icon name="albums"></ion-icon>
+            </ion-button>
+            <ion-button size="small" color="primary" (click)="showMessages(request)">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+            </ion-button>
+            <ion-button size="small" color="primary" (click)="makeCall(request)">
+              <ion-icon name="call"></ion-icon>
+            </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

@@ -4,7 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { darkStyle } from './map-dark-style';
-import { ModalController, PopoverController, NavController, MenuController } from '@ionic/angular';
+import { ModalController, PopoverController, NavController, MenuController, IonSelect } from '@ionic/angular';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { LocationService } from 'src/app/services/location/location.service';
@@ -16,6 +16,11 @@ import { Product } from '../products/model/product.model';
 import { CustomerRequest } from '../customer-request/model/customer-request.model';
 import { CustomerRequestService } from '../customer-request/services/customer-request.service';
 import { analytics } from 'firebase';
+import { interval } from 'rxjs';
+import { ProductRequestPage } from './product-request/product-request.page';
+
+
+
 
 
 //TODO: check if this is required
@@ -28,6 +33,21 @@ declare var google: any;
 })
 export class MapsPage implements AfterViewInit {
   @ViewChild('mapCanvas', { static: true }) mapElement: ElementRef;
+  @ViewChild('mySelect',  { static: true }) selectRef: IonSelect;
+  
+  showList: boolean= false;
+  selectedCartUserId: string = '';
+  selectedOptions: any = [];
+  customAlertOptions: any = {
+    header: '',
+    subHeader: '',
+    message: '',
+    translucent: true
+  };
+  products: any;
+
+  selectedCustomer: CustomerRequest = null;
+
   public userEmail: string = "";
   locationCoords: any;
   timetest: any;
@@ -37,6 +57,12 @@ export class MapsPage implements AfterViewInit {
   customerRequestList: CustomerRequest[] = [];
   buttonDisabled: boolean = true;
   currentMarker: any;
+  globalMarkerCart: any;
+  myCartLocation = {
+    lat: 0,
+    lng:0,
+  };
+
   constructor(
     @Inject(DOCUMENT) private doc: Document,
     private authService: AuthService,    
@@ -48,6 +74,7 @@ export class MapsPage implements AfterViewInit {
     private router: Router,
     public productService: ProductsService,
     private alertService: AlertService,
+    public modalController: ModalController,
     public _ngZone: NgZone) {
     this.locationCoords = {
       latitude: "",
@@ -61,7 +88,10 @@ export class MapsPage implements AfterViewInit {
     this.authService.user$.subscribe((user) => {
        this.userProfile = user;
        this.userEmail = this.userProfile.email;
-       this.getRequestByUserId();
+       //get requests added by logged in customer
+       if(this.userProfile.roleName == 'Customer') {
+        this.getRequestByUserId();
+       }
        this.loadMap();
      });
 
@@ -126,11 +156,7 @@ export class MapsPage implements AfterViewInit {
         });
 
         this.cartUsersList.forEach((markerData: any) => {
-          const infoWindow = new googleMaps.InfoWindow({
-            content:''
-          });
           this.productService.getProductsByUser(markerData.uid).subscribe((products) => {
-            
             // icon 
             const iconCart = {
               url: 'assets/imgs/cart.png', // image url
@@ -142,23 +168,14 @@ export class MapsPage implements AfterViewInit {
               title: markerData.name,
               icon: iconCart
             });
-  
-            let infoContent: string = '<h6>' + markerData.firstName + ' ' + markerData.lastName  + '</h6>'
-            infoContent = infoContent +'<b><ion-label color="primary">Todays Products:</ion-label></b>'
-            infoContent = infoContent +'<br><b>'
-            products.forEach((product: Product)=>{
-              infoContent = infoContent + product.name  +'  ('+ product.price +'  ₹) <br>'
-            });
-            infoContent = infoContent +'</b>'
-            infoContent = infoContent +'<ion-button size="small" color="success" onclick="window.angularComponentRef.zone.run(() => {window.angularComponentRef.component.addRequest(\''+ markerData.uid + '\');})">Add Request</ion-button>';
 
-            //1km logic here
+            //nth km logic here
             if(markerData != center) {
               marker.addListener('click', () => {
                 let distanceInKM = this.getDistanceFromLatLonInKm(center.lat, center.lng, marker.position.lat(), marker.position.lng());
-                if(distanceInKM <= 5) {
-                  infoWindow.setContent(infoContent);  
-                  infoWindow.open(map, marker);                  
+                if(distanceInKM <= 2) {
+                  //show send request modal
+                  this.openModal(products, markerData);
                 } else {
                   this.toastService.present({
                     message: "Sorry, too long distance can't receive your request!",
@@ -176,6 +193,7 @@ export class MapsPage implements AfterViewInit {
         });
       });// get cart users api ends
     } else if(this.userProfile.roleName == 'CartUser') {
+      //load cart user map
       this.customerRequestService.getRequestsByCartUser(this.userProfile.uid).subscribe((res) => {
         this.customerRequestList = res;      
         const mapEle = this.mapElement.nativeElement;
@@ -187,29 +205,27 @@ export class MapsPage implements AfterViewInit {
           styles: darkStyle,
         });
         
-        //customer marker
-        const iconCustomer = {
+        //cart marker
+        const iconCart = {
           url: 'assets/imgs/cart.png', // image url
           scaledSize: new google.maps.Size(40, 40), // scaled size
         };
-        //customer marker
-        const markerCustomer = new googleMaps.Marker({
+        //cart marker
+        const markerCart = new googleMaps.Marker({
           position: {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude},
           map,
           title: this.userProfile.firstName + ' ' + this.userProfile.lastName,
-          icon: iconCustomer
+          icon: iconCart
         });
+        this.globalMarkerCart = markerCart;
+        
+        //TODO: loation update logic, move
+        // this.myCartLocation = {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude};
+        // let sub = interval(1000).subscribe((val) => { this.updateMarkerLocation(); });
 
         this.customerRequestList.forEach((markerData: any) => {
-          const infoWindow = new googleMaps.InfoWindow({
-            content:''
-          }); 
-          
-            let infoContent: string = '<h6><ion-label color="primary">' + markerData.customerName + '</ion-label></h6>'
-            infoContent = infoContent +'<b> ' + markerData.phoneNumber +'</b>'
-                    
-          // icon 
-          const iconCart = {
+          //customer icon 
+          const iconCustomer = {
             url: 'assets/imgs/customer_location.png', // image url
             scaledSize: new google.maps.Size(50, 50), // scaled size
           };
@@ -217,17 +233,16 @@ export class MapsPage implements AfterViewInit {
             position: { lat: +markerData.customerLatitude, lng: +markerData.customerLongitude},
             map,
             title: markerData.name,
-            icon: iconCart
+            icon: iconCustomer
           });
   
           //1km logic here
           if(markerData != center) {
               marker.addListener('click', () => {
-                  infoWindow.setContent(infoContent);  
-                  infoWindow.open(map, marker);
+                this.selectedCustomer = markerData;
+                this.showRequest(markerData);
               });
             }   
-          
         });
   
         googleMaps.event.addListenerOnce(map, 'idle', () => {
@@ -302,84 +317,215 @@ export class MapsPage implements AfterViewInit {
     }
   }
 
-  //add request
-  addRequest(cartUserId) {
-    let exists = this.customerRequestList.find(x=>x.cartUserId == cartUserId);
-    if(exists) {
-      this.toastService.present({
-        message: "Request already sent!",
-        duration: 3000,
-        color: "danger"
-      });
-      return;
-    }
-    this.showProcessing();
-    
-    if(this.userProfile.phoneNumber == undefined) {
-      this.userProfile.phoneNumber = '';
-    }
-    if(this.userProfile.firstName == undefined) {
-      this.userProfile.firstName = '';
-    }  
-    if(this.userProfile.lastName == undefined) {
-      this.userProfile.lastName = '';
-    }
+  //get last customer message
+  private getLastCustomerMessage(messages) {
+    return messages.filter(e => e.from == 'CUSTOMER')
+    .sort((a,b) => b.dateTime - a.dateTime);
+  }
 
-    const newRequest: CustomerRequest = {
-      id: '',
-      cartUserId: cartUserId,
-      customerId: this.userProfile.uid,
-      customerLatitude: this.userProfile.latitude,
-      customerLongitude: this.userProfile.longitude,
-      customerName: this.userProfile.firstName + ' ' + this.userProfile.lastName,
-      customerPhoneNumber:  this.userProfile.phoneNumber,
-      dateRequested: new Date().toDateString(),
-      status: 'REQUESTED'
-    };
-    
-    this.customerRequestService
-        .addRequest(newRequest)
-        .then(() => {
-          this.requestSuccess();
-          this.getRequestByUserId();        
-    })
-    .catch(error => {
-          this.requestFailed(error);
+  //show request to cartist
+  async showRequest(request: CustomerRequest) {
+    let header = request.customerName;
+    if(request.customerPhoneNumber != ''){
+      header = header + ' ('+request.customerPhoneNumber+')';
+    }
+    let oldMessages = '<b class="secondary">Messages:</b><br>';
+    request.messages.forEach(element => {
+      if(element.from == 'CUSTOMER') {
+        oldMessages += '<b>Customer:</b> ' + element.message + '<br>';
+      } else {
+        oldMessages += '<b>You:</b> ' + element.message + '<br>';
+      }
+    });
+    let buttonArray: any;
+    if(request.status == 'REQUESTED') {
+      buttonArray = [{
+        text: 'CLOSE',
+        role:'cancel',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          
+        }
+      },{
+        text: 'REJECT',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.rejectRequest();
+      }
+    }, {
+      text: 'PENDING',
+      cssClass:'alert-button-group',
+      handler: (data) => {
+        this.selectedCustomer.messages.push({
+          from: "CARTIST",
+          message: data.inputMessage,
+          dateTime: new Date()
+        });
+        this.pendingRequest();
+      }
+    },{
+      text: 'ACCEPT',
+      cssClass:'alert-button-group',
+      handler: (data) => {
+        this.selectedCustomer.messages.push({
+          from: "CARTIST",
+          message: data.inputMessage,
+          dateTime: new Date()
+        });
+        this.acceptRequest();
+      }
+    }
+      ];
+    } else if(request.status == 'PENDING') {
+      buttonArray = [{
+        text: 'CLOSE',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          
+        }
+      },{
+        text: 'REJECT',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.rejectRequest();
+        }
+      },{
+        text: 'ACCEPT',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.acceptRequest();
+        }
+      }];
+    } else {
+      buttonArray = [{
+        text: 'CLOSE',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          
+        }
+      },{
+        text: 'REJECT',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.rejectRequest();
+        }
+      },{
+        text: 'UPDATE',
+        cssClass:'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.updateRequest();
+        }
+      }];
+    }
+    this.alertService.present({
+      header: header,
+      subHeader: request.selectedOptions.toString(),
+      message: oldMessages,
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'inputMessage',
+          type: 'text',
+          placeholder: 'Enter message here!'
+        }
+      ],
+      buttons: buttonArray
+  });
+  }
+  
+  //open send request modal
+  async openModal(products: Product[], markerData : User) {
+    const modal = await this.modalController.create({
+    component: ProductRequestPage,
+    componentProps: { products: products, user : markerData, customerRequests: this.customerRequestList }
+    });
+    modal.onDidDismiss().then(data=>{
+      console.log(data);
+      })
+    return await modal.present();
+  }
+
+  //update request
+  private updateRequest() {
+    this.customerRequestService.updateRequestDocumentInFirebase(this.selectedCustomer);
+    this.toastService.present({
+      message: "Request updated successfully!",
+      duration: 3000,
+      color: "success"
     });
   }
 
+  //accept request
+  private acceptRequest() {
+    this.selectedCustomer.status = 'ACCEPTED';
+    this.customerRequestService.updateRequestDocumentInFirebase(this.selectedCustomer);
+    this.toastService.present({
+      message: "Request accepted successfully!",
+      duration: 3000,
+      color: "success"
+    });
+  }
+
+  //reject request
+  private rejectRequest() {
+    this.selectedCustomer.status = 'REJECTED';
+    this.customerRequestService.updateRequestDocumentInFirebase(this.selectedCustomer);
+    this.toastService.present({
+      message: "Request rejected successfully!",
+      duration: 3000,
+      color: "warning"
+    });
+  }
+
+  //pending request
+  private pendingRequest() {
+    this.selectedCustomer.status = 'PENDING';
+    this.customerRequestService.updateRequestDocumentInFirebase(this.selectedCustomer);
+    this.toastService.present({
+      message: "Request set to Pending!",
+      duration: 3000,
+      color: "secondary"
+    });
+  }
+
+  //get requests added by logged in customers 
   getRequestByUserId() {
     this.customerRequestService.getRequestsByUser(this.userProfile.uid).subscribe((requests) => {
       this.customerRequestList = requests;
     });
   }
 
-  //show processing 
-  showProcessing() {
-    this.loadingService.present({
-      message: "Saving. . ."
-    });
+  //update marker position on map
+  updateMarkerLocation() {
+    this.myCartLocation = {lat:this.myCartLocation.lat+0.0001, lng:this.myCartLocation.lng+0.0001 };
+    this.globalMarkerCart.setPosition(this.myCartLocation);
   }
 
-  //request sent success
-  requestSuccess() {
-    this.loadingService.dismiss();
-    this.toastService.present({
-      message: "Request sent sucessfully!",
-      duration: 3000,
-      color: "secondary"
-    });
-  }
-
-  //request sent failure
-  requestFailed(error: any) {
-    this.loadingService.dismiss();
-    this.alertService.present({
-      header: "Error! Request not sent!",
-      message: error.message,
-      buttons: ["OK"]
-    });
-  }
 
   ngOnDestroy() {
     window["angularComponentRef"] = null;

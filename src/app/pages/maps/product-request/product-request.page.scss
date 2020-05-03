@@ -1,0 +1,21 @@
+.product-list {
+    max-height: 80% !important;
+    overflow: auto !important;
+}
+
+.card-background-selected {
+    --ion-background-color: #a6ffbe;
+    background-color: #a6ffbe;
+}
+
+.card-background-unselected {
+    --ion-background-color: #ffffff;
+    background-color: #ffffff;
+}
+
+.request-messages {
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

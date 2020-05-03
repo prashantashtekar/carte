@@ -8,7 +8,10 @@ export class CustomerRequest {
     public cartUserId: string = "";
     public status: string = "";
     public dateRequested: string = "";
+    public selectedOptions: any= [];
+    public messages: any = [];
 };
+
 //Customer
 //Requested
 //Cancelled - user or (date < today)

@@ -5,29 +5,29 @@ import { LoadingController } from '@ionic/angular';
   providedIn: 'root'
 })
 export class LoadingService {
+  //https://stackoverflow.com/questions/52574448/ionic-4-loading-controller-dismiss-is-called-before-present-which-will-ke
+  
+  isLoading = false;
 
   constructor(public loadingController: LoadingController) { }
-
-  //https://stackoverflow.com/questions/52574448/ionic-4-loading-controller-dismiss-is-called-before-present-which-will-ke
 
   async present(options: object) {
     // Dismiss all pending loaders before creating the new one
     await this.dismiss();
-
-    await this.loadingController
-      .create(options)
-      .then(res => {
-        res.present();
+    this.isLoading = true;
+    return await this.loadingController.create(options).then(a => {
+      a.present().then(() => {
+        if (!this.isLoading) {
+          a.dismiss().then(() => console.log('abort presenting'));
+        }
       });
+    });
   }
 
-  /**
-   * Dismiss all the pending loaders, if any
-   */
   async dismiss() {
+    this.isLoading = false;
     while (await this.loadingController.getTop() !== undefined) {
       await this.loadingController.dismiss();
     }
   }
-
 }

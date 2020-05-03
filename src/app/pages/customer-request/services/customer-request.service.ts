@@ -25,13 +25,16 @@ export class CustomerRequestService {
       customerName: request.customerName,
       customerPhoneNumber: request.customerPhoneNumber,
       dateRequested: request.dateRequested,
-      status: request.status
+      status: request.status,
+      selectedOptions: request.selectedOptions,
+      messages : request.messages
     };
     let requestDoc: AngularFirestoreDocument<CustomerRequest> 
       = this.firestore.doc<CustomerRequest>(`requests/${id}`);
     return requestDoc.set(newRequest);
   }
 
+  //get requests added by userid for current date
   getRequestsByUser(userId: string) {
     this.customerRequestCollection = this.firestore.collection('requests', ref => ref.where('customerId', '==', userId).where('dateRequested', '==', new Date().toDateString()));
     this.customerRequests = this.customerRequestCollection.snapshotChanges().pipe(
@@ -46,8 +49,10 @@ export class CustomerRequestService {
     return this.customerRequests;
   }
 
+  //get requests by cart user id
   getRequestsByCartUser(cartUserId: string) {
-    this.customerRequestCollection = this.firestore.collection('requests', ref => ref.where('cartUserId', '==', cartUserId).where('dateRequested', '==', new Date().toDateString()));
+    //where('dateRequested', '==', new Date().toDateString()).
+    this.customerRequestCollection = this.firestore.collection('requests', ref => ref.where('cartUserId', '==', cartUserId).where('status', 'in', ['ACCEPTED','REQUESTED', 'PENDING']));
     this.customerRequests = this.customerRequestCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
@@ -58,5 +63,16 @@ export class CustomerRequestService {
       })
     );
     return this.customerRequests;
+  }
+
+  
+
+  //update request status to rejected to accepted
+  updateRequestDocumentInFirebase(request: CustomerRequest) {
+    let reqDoc: AngularFirestoreDocument<CustomerRequest> = this.firestore.doc<CustomerRequest>(`requests/${request.id}`);
+    reqDoc.update({
+      status: request.status,
+      messages: request.messages
+    });
   }
 }

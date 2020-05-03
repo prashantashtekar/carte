@@ -1,9 +1,35 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>history</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="padding-page">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <h3 class="ion-text-center ion-margin-top" color="primary">Request History</h3>
+      </ion-col>
+    </ion-row>   
+  </ion-grid>
+  <ion-card *ngFor="let request of requests; let i = index" 
+    (click)="showRequestDetails(request)">
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label>{{request.dateRequested}}</ion-label>
+        <ion-note slot="end" [color]="getStatusClass(request.status)"><b>{{request.status | titlecase }}</b></ion-note>
+      </ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button size="small" color="primary" (click)="showProducts(request)">
+              Products
+              <ion-icon slot="end" name="albums"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button size="small" color="primary" (click)="showMessages(request)">
+              Messages
+              <ion-icon slot="end" name="logo-whatsapp"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
-<ion-content>
-
+    </ion-card-content>
+  </ion-card>
 </ion-content>

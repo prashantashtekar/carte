@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-title float-left>Send Request</ion-title>
+      <ion-buttons float-right (click)="closeModal()" class="margin-right">
+        <ion-icon item-right name="close" style="zoom:2.0;"></ion-icon>
+      </ion-buttons>
+  </ion-toolbar>
+  </ion-header>
+<ion-content>
+      <ion-card *ngFor="let product of products; let i = index" 
+        (click)="selectOption(product)" 
+        [class]="getClassName(product.name)">
+        <ion-card-content>
+          <ion-item lines="none">
+            <ion-label>{{product.name}}</ion-label>
+            <ion-note slot="end" color="primary" [hidden]="product.isOutOfStock">₹ {{product.price}}</ion-note>
+            <ion-note slot="end" color="danger" [hidden]="!product.isOutOfStock">Out of Stock</ion-note>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+</ion-content>
+<ion-footer no-shadow>
+  <div [innerHtml]="oldMessages" class="request-messages"></div>
+  <ion-item>
+    <ion-label position="floating">Enter message for cartist:</ion-label>
+    <ion-input [(ngModel)]="message" name="message" [disabled]="buttonDisabled"></ion-input>
+  </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="danger" (click)="closeModal()" >Close</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="sendRequest()" [disabled]="buttonDisabled">{{sendButtonName}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

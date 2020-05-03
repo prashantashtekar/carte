@@ -26,6 +26,10 @@ const routes: Routes = [
       {
         path: 'request',
         loadChildren: () => import('../customer-request/customer-request.module').then(m => m.CustomerRequestPageModule)
+      },
+      {
+        path: 'history',
+        loadChildren: () => import('../history/history.module').then(m => m.HistoryPageModule)
       }
     ]
   },
