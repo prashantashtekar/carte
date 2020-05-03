@@ -25,6 +25,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ProductRequestPageModule } from './pages/maps/product-request/product-request.module';
+import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx';
+import { FirebaseProvider } from 'src/mock.providers';
 
 @NgModule({
   declarations: [AppComponent, UserProfilePopoverComponent],
@@ -40,6 +42,7 @@ import { ProductRequestPageModule } from './pages/maps/product-request/product-r
     AngularFirestoreModule,
     UserProfileModalPageModule,
     ProductRequestPageModule,
+    UserProfileModalPageModule
   ],
   providers: [
     StatusBar,
@@ -47,9 +50,9 @@ import { ProductRequestPageModule } from './pages/maps/product-request/product-r
     GooglePlus,
     NativeStorage,
     AndroidPermissions,
-    Geolocation,
-    LocationAccuracy,Diagnostic,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Geolocation, FirebaseAuthentication,
+    LocationAccuracy, Diagnostic, FirebaseProvider,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 
   ],
   bootstrap: [AppComponent]
