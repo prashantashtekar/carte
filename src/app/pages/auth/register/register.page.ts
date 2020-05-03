@@ -112,7 +112,7 @@ export class RegisterPage implements OnInit {
 
   routeToLoginPage() {
     this.resetRegistrationForm();
-    this.router.navigateByUrl("/login");
+    this.router.navigateByUrl("/login-phone");
   }
 
   resetRegistrationForm() {

@@ -93,7 +93,7 @@ export class AppComponent {
     this.authService.changePassword(emailAddress)
       .then(() => {
         this.resetRequestSuccess();
-        this.router.navigateByUrl("/login");
+        this.router.navigateByUrl("/login-phone");
       }).catch(error => {
         this.requestFailed(error)
       });
@@ -105,7 +105,7 @@ export class AppComponent {
       .logoutUser()
       .then(() => {
         this.logoutSucess();
-        this.router.navigateByUrl("/login");
+        this.router.navigateByUrl("/login-phone");
       })
       .catch(error => console.log(error));
   }

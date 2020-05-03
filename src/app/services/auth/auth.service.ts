@@ -24,6 +24,13 @@ export class AuthService {
     this.afAuth.authState.subscribe(auth => {
       this.authState = auth;
     });
+
+    // this.authSub = this.afAuth.authState.subscribe((user: firebase.User) => {
+    //   if (user) {
+    //     this.doLogin();
+    //   }
+    // });
+
     this.user$ = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
@@ -41,6 +48,7 @@ export class AuthService {
 
     console.log("Ob user");
     console.log(this.user$);
+    
     this.afAuth.auth.onAuthStateChanged(firebaseUser => {
       this.zone.run(() => {
         firebaseUser ? this.loggedIn.next(true) : this.loggedIn.next(false);
@@ -60,26 +68,23 @@ export class AuthService {
     return this.afAuth.auth.currentUser;
   }
 
-  checkUserExist(uid: string, email: string) {
+  checkUserExist(uid: string, phoneNumber: string) {
     this.afs.firestore.doc(`users/${uid}`).get()
       .then(docSnapshot => {
         if (!docSnapshot.exists) {
-          this.createNewUserDocumentInFirebase(email, uid);
+          this.createNewUserDocumentInFirebase(phoneNumber, uid);
         }
       });
   }
   //Login With Email
   async loginWithEmail(email: string, password: string): Promise<firebase.auth.UserCredential> {
-
     return await new Promise<any>((resolve, reject) => {
       this.afAuth.auth.signInWithEmailAndPassword(email, password)
         .then(
           res => resolve(res),
           err => reject(err))
     })
-
     //return await this.afAuth.auth.signInWithEmailAndPassword(email, password);
-
   }
 
   //Register Email
@@ -141,14 +146,15 @@ export class AuthService {
     await this.afAuth.auth.sendPasswordResetEmail(email);
   }
 
-  createNewUserDocumentInFirebase(email: string, uid: string): void {
+  createNewUserDocumentInFirebase(phoneNumber: string, uid: string): void {
+    //Here phone number is passes as we are using phone authenticaiton. Change it to email when using email
     const newUser: User = {
       uid: uid,
-      email: email,
+      email: "",
       roleName: 'Customer',
       firstName: "",
       lastName: "",
-      phoneNumber: "",
+      phoneNumber: phoneNumber,
       address: "",
       cartId: "",
       cartName: "",

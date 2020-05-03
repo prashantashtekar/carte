@@ -28,6 +28,9 @@
     <ion-item>
       <ion-input formControlName="lastName" placeholder="Last Name" type="text"></ion-input>
     </ion-item>
+    <ion-item>
+      <ion-input formControlName="mobileName" placeholder="Mobile Name" type="text"></ion-input>
+    </ion-item>
   </form>
 
   <ion-button expand="block" (click)="updateUserProfile()" [disabled]="userProfileForm.invalid || !userProfileForm.dirty">Update User</ion-button>
