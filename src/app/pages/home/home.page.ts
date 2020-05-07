@@ -42,13 +42,13 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.menu.enable(true);
+    //this.router.navigate(["home/map"]);
+    // this.authService.user$.subscribe((user) => {
+    //   console.log('current user: ', user);
+    //   this.userProfile = user;
+    //   this.roleName = user.roleName;
 
-    this.authService.user$.subscribe((user) => {
-      console.log('current user: ', user);
-      this.userProfile = user;
-      this.roleName = user.roleName;
-
-    });
+    // });
 
 
     //Tabs Implementation

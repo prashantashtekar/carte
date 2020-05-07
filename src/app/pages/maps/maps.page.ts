@@ -85,14 +85,19 @@ export class MapsPage implements AfterViewInit {
   }
 
   async ngAfterViewInit() {
+
     this.authService.user$.subscribe((user) => {
-       this.userProfile = user;
-       this.userEmail = this.userProfile.email;
-       //get requests added by logged in customer
-       if(this.userProfile.roleName == 'Customer') {
-        this.getRequestByUserId();
-       }
-       this.loadMap();
+      if(user!= null)
+      {
+        this.userProfile = user;
+        //this.userEmail = this.userProfile.email;
+        //get requests added by logged in customer
+        if(this.userProfile.roleName == 'Customer') {
+         this.getRequestByUserId();
+        }
+        this.loadMap();
+      }
+     
      });
 
   }

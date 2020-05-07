@@ -34,8 +34,8 @@ const routes: Routes = [
     ]
   },
   {
-    path: "",
-    redirectTo: "home/map",
+    path:'',
+    redirectTo: "/home/map",
     pathMatch: "full"
   }
 ];

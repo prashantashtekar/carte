@@ -35,14 +35,22 @@ export class UserProfilePage implements OnInit, OnDestroy {
       this.setUserProfileForm();
     });
     //Old working
-    // this.userProfile =this.authService.userDetails();
-    // this.setUserProfileForm();
+    // let userdata = this.authService.userDetails();
+    // if (userdata != null) {
+    //   this.authService.getUser(userdata.uid).subscribe((data: User) => {
+    //     this.userProfile = data;
+    //     this.setUserProfileForm();
+    //   })
+    // }
+
   }
 
   setUserProfileForm() {
     this.userProfileForm.controls['email'].setValue(this.userProfile.email);
     this.userProfileForm.controls['firstName'].setValue(this.userProfile.firstName);
     this.userProfileForm.controls['lastName'].setValue(this.userProfile.lastName);
+    // this.userProfileForm.controls['phoneNumber'].setValue(this.userProfile.lastName);
+    // this.userProfileForm.controls['address'].setValue(this.userProfile.lastName);
   }
 
   ngOnDestroy(): void { }

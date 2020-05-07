@@ -2,41 +2,39 @@ import { Injectable, NgZone } from "@angular/core";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import 'firebase/firestore';
-import { switchMap } from "rxjs/operators";
+import { switchMap, skipWhile, map } from "rxjs/operators";
 import { User } from "../../interfaces/user";
 
 import { BehaviorSubject, Observable, of } from "rxjs";
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  user$: Observable<any>;
-  private authState: any;
+  user$: Observable<User>;
+  userInfo$: BehaviorSubject<User> = new BehaviorSubject(null);
+
+
+  authState: any;
   public loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private currentUserSubject: BehaviorSubject<User>;
   constructor(
     public afAuth: AngularFireAuth,
     private zone: NgZone,
-    private afs: AngularFirestore) { }
+    private afs: AngularFirestore) {
+  }
 
   init() {
     this.afAuth.authState.subscribe(auth => {
       this.authState = auth;
     });
 
-    // this.authSub = this.afAuth.authState.subscribe((user: firebase.User) => {
-    //   if (user) {
-    //     this.doLogin();
-    //   }
-    // });
-
     this.user$ = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          //console.log("User already logged in: ", user);
-          //let userDoc = this.afs.doc<User>(`users/${user.uid}`);
-          let userDoc = this.afs.collection('users').doc(user.uid);          
+          console.log("User already logged in: ", user);
+          let userDoc = this.afs.doc<User>(`users/${user.uid}`);
           return userDoc.valueChanges();
         } else {
           console.log("No user logged in.");
@@ -46,9 +44,9 @@ export class AuthService {
     );
     this.user$.subscribe();
 
-    console.log("Ob user");
-    console.log(this.user$);
-    
+    // console.log("Ob user");
+    // console.log(this.user$);
+
     this.afAuth.auth.onAuthStateChanged(firebaseUser => {
       this.zone.run(() => {
         firebaseUser ? this.loggedIn.next(true) : this.loggedIn.next(false);
@@ -63,6 +61,17 @@ export class AuthService {
   get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
+
+  setUser(uid) {
+    this.afs.collection('users').doc(uid).valueChanges().subscribe((user: User) => {
+      this.userInfo$.next(user);
+    });
+  }
+  
+  getUser(uid) {
+    return this.afs.collection('users').doc(uid).valueChanges();
+  }
+
   //PA-Added- to get user details
   userDetails() {
     return this.afAuth.auth.currentUser;

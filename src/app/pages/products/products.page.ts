@@ -5,6 +5,8 @@ import { ProductsService } from './services/products.service';
 import { User } from 'src/app/interfaces/user';
 import { AdminService } from 'src/app/services/admin/admin.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { catchError } from 'rxjs/operators';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-products',
@@ -16,7 +18,7 @@ export class ProductsPage implements OnInit {
   userProfile: User = null;
 
   constructor(private router: Router, private authService: AuthService,
-    public productService: ProductsService, ) { }
+    public productService: ProductsService,public alertCtrl:AlertController ) { }
 
   ngOnInit() {
     this.authService.user$.subscribe((user) => {
@@ -29,7 +31,15 @@ export class ProductsPage implements OnInit {
   geProduct(uid) {
     this.productService.getProductsByUser(uid).subscribe((res) => {
       this.productList = res;
-    });
+    },
+    async error  => {
+      const alert = await this.alertCtrl.create({
+        message: error.message,
+        buttons: [{ text: 'Ok', role: 'cancel' }],
+      });
+      await alert.present();
+    }
+    );
   }
 
   updateProduct(product: Product) {
