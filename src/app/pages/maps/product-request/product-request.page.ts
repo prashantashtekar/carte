@@ -39,7 +39,7 @@ export class ProductRequestPage implements OnInit {
       this.user = navParams.get('user');
       this.customerRequestList = navParams.get('customerRequests');
       
-      let exists = this.customerRequestList.find(x=>x.cartUserId == this.user.uid);
+      let exists = this.customerRequestList.find(x=>x.cartUserId == this.user.uid && (x.status == 'SUBMITTED' || x.status == 'PENDING'));
       if(exists && exists.status != 'REJECTED') {
         this.mode = 'EDIT';
         this.sendButtonName = 'Update';
@@ -117,7 +117,7 @@ export class ProductRequestPage implements OnInit {
       this.message = '';
     }
     if(this.mode == 'EDIT') {
-      let exists = this.customerRequestList.find(x=>x.cartUserId == this.user.uid);
+      let exists = this.customerRequestList.find(x=>x.cartUserId == this.user.uid  && (x.status == 'SUBMITTED' || x.status == 'PENDING'));
       exists.messages.push({
         from: "CUSTOMER",
         message: this.message,

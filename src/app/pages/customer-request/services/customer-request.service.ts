@@ -36,7 +36,7 @@ export class CustomerRequestService {
 
   //get requests added by userid for current date
   getRequestsByUser(userId: string) {
-    this.customerRequestCollection = this.firestore.collection('requests', ref => ref.where('customerId', '==', userId).where('dateRequested', '==', new Date().toDateString()));
+    this.customerRequestCollection = this.firestore.collection('requests', ref => ref.where('customerId', '==', userId).where('dateRequested', 'in', [new Date().toDateString(), new Date(new Date().getDate() -1).toDateString()]));
     this.customerRequests = this.customerRequestCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
@@ -52,7 +52,10 @@ export class CustomerRequestService {
   //get requests by cart user id
   getRequestsByCartUser(cartUserId: string) {
     //where('dateRequested', '==', new Date().toDateString()).
-    this.customerRequestCollection = this.firestore.collection('requests', ref => ref.where('cartUserId', '==', cartUserId).where('status', 'in', ['ACCEPTED','REQUESTED', 'PENDING']));
+    this.customerRequestCollection = this.firestore
+      .collection('requests', ref => ref
+        .where('cartUserId', '==', cartUserId)
+        .where('status', 'in', ['ACCEPTED','REQUESTED', 'PENDING']));
     this.customerRequests = this.customerRequestCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {

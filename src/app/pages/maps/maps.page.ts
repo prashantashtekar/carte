@@ -262,20 +262,39 @@ export class MapsPage implements AfterViewInit {
           styles: darkStyle,
         });
         
-        //customer marker
-        const iconCustomer = {
+        //admin marker
+        const iconAdmin = {
           url: 'assets/imgs/customer_location.png', // image url
           scaledSize: new google.maps.Size(40, 40), // scaled size
         };
-        //customer marker
-        const markerCustomer = new googleMaps.Marker({
+        //admin marker
+        const markerAdmin = new googleMaps.Marker({
           position: {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude},
           map,
           title: this.userProfile.firstName + ' ' + this.userProfile.lastName,
-          icon: iconCustomer
+          icon: iconAdmin
         });
 
         this.cartUsersList.forEach((markerData: any) => {
+          //markerData means cartUser
+          //TODO: get cart user todays coordinates
+          var flightPlanCoordinates = [
+            {lat: 37.772, lng: -122.214},
+            {lat: 21.291, lng: -157.821},
+            {lat: -18.142, lng: 178.431},
+            {lat: -27.467, lng: 153.027}
+          ];
+          var flightPath = new google.maps.Polyline({
+            path: flightPlanCoordinates,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+  
+          flightPath.setMap(map);
+
+          
           const infoWindow = new googleMaps.InfoWindow({
             content:''
           }); 
