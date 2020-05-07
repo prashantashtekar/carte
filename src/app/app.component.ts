@@ -105,7 +105,7 @@ export class AppComponent {
       .logoutUser()
       .then(() => {
         this.logoutSucess();
-        this.router.navigateByUrl("/login-phone");
+        this.router.navigateByUrl("/login");
       })
       .catch(error => console.log(error));
   }
@@ -139,11 +139,20 @@ export class AppComponent {
     });
   }
   initializeApp() {
-    this.authService.init();
 
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+    
+      this.authService.init();
+ 
     });
+
+   
+
+    // this.platform.ready().then(() => {
+    //   this.statusBar.styleDefault();
+    //   this.splashScreen.hide();
+    // });
   }
 }

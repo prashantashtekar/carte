@@ -4,6 +4,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -42,7 +43,8 @@ import { FirebaseProvider } from 'src/mock.providers';
     AngularFirestoreModule,
     UserProfileModalPageModule,
     ProductRequestPageModule,
-    UserProfileModalPageModule
+    UserProfileModalPageModule,
+    IonicStorageModule.forRoot(),
   ],
   providers: [
     StatusBar,
