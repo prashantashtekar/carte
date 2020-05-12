@@ -84,8 +84,13 @@ export class ProductsService {
     });
   }
 
+  isInOutStockProduct(id: string, flag: boolean) {
+    return this.firestore.collection('products').doc(id).update({
+      isOutOfStock: flag
+    });
+  }
+
   deleteProduct(id: string) {
     return this.firestore.collection('products').doc(id).delete();
-
   }
 }

@@ -93,7 +93,7 @@ export class AppComponent {
     this.authService.changePassword(emailAddress)
       .then(() => {
         this.resetRequestSuccess();
-        this.router.navigateByUrl("/login-phone");
+        this.router.navigateByUrl("/login");
       }).catch(error => {
         this.requestFailed(error)
       });

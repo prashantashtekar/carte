@@ -31,7 +31,7 @@
           <ion-button *ngIf="!product.isActive" (click)="dissapproveProduct(product.id)" color="danger"
             name="close-circle" size="small">Deactive</ion-button>
 
-            <ion-button *ngIf="product.isOutOfStock" (click)="isOutOfStockProduct(product.id)" color="success"
+            <ion-button *ngIf="product.isOutOfStock" (click)="isStockProduct(product.id)" color="success"
             name="checkmark-circle" size="small">In Stock</ion-button>
           <ion-button *ngIf="!product.isOutOfStock" (click)="isOutOfStockProduct(product.id)" color="danger"
             name="close-circle" size="small">Out of Stock</ion-button>

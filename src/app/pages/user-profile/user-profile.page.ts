@@ -24,7 +24,9 @@ export class UserProfilePage implements OnInit, OnDestroy {
     this.userProfileForm = this.formBuilder.group({
       email: [{ value: "", disabled: true }],
       firstName: ["", Validators.required],
-      lastName: [""]
+      lastName: [""],
+      phoneNumber: ["", Validators.required],
+      address: [""]
     });
   }
 
@@ -68,7 +70,8 @@ export class UserProfilePage implements OnInit, OnDestroy {
     // form control cause the email value to not exist??
     userFormData.email = this.userProfile.email;
 
-    this.authService.updateUserDocumentInFirebase(userFormData);
+    this.authService.updateUserDocumentInFirebase(userFormData)
+    this.router.navigateByUrl("/home");
     this.userProfileForm.markAsPristine();
   }
 
