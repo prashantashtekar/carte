@@ -89,6 +89,12 @@ export class AdminService {
       isActive: flag
     });
   }
+  
+  UpdateIsCartActive(userid: string, flag: boolean) {
+    return this.firestore.collection('users').doc(userid).update({
+      isCartActive: flag
+    });
+  }
 
   deleteMember(userid: string) {
     return this.firestore.collection('users').doc(userid).delete();

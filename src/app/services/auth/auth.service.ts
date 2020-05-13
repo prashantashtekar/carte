@@ -123,7 +123,9 @@ export class AuthService {
       cartName: user.cartName,
       isActive: user.isActive,
       latitude: "",
-      longitude: ""
+      longitude: "",
+      isCartActive: user.isCartActive,
+      location : user.location
     };
     let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${uid}`);
     userDoc.set(newUser);
@@ -169,7 +171,9 @@ export class AuthService {
       cartName: "",
       isActive: true,
       latitude: "",
-      longitude: ""
+      longitude: "",
+      isCartActive:false,
+      location: []
     };
     let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${uid}`);
     userDoc.set(newUser);

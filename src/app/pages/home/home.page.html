@@ -5,11 +5,10 @@
     </ion-buttons>
     <ion-title>
       Cart E
-    </ion-title>
-    <!-- <ion-buttons slot="end">
-      <ion-icon name="contact" color="primary" size="large" (click)="navigateToProfile()" class="right-padding">
-      </ion-icon>
-    </ion-buttons> -->
+    </ion-title>    
+    <ion-buttons slot="end">
+      <ion-icon [name]="isCartActiveData.iconName" *ngIf="isCartActiveData.isVisible" (click)="isCartActive()" [color]="isCartActiveData.className" size="large"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

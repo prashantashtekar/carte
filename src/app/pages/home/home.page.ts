@@ -12,6 +12,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { LocationService } from 'src/app/services/location/location.service';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { User } from 'src/app/interfaces/user';
+import { AdminService } from 'src/app/services/admin/admin.service';
 import { MapsPage } from '../maps/maps.page';
 import { ProductsPage } from '../products/products.page';
 
@@ -24,10 +25,17 @@ export class HomePage implements OnInit {
 
   userProfile: User = null;
   roleName: string = ""
+  isCartActiveData: any = {
+    isVisible : false,
+    className : 'success',
+    iconName : 'checkmark-circle'
+  };
+
   constructor(
     private authService: AuthService,
     private router: Router,
     private toastService: ToastService,
+    public adminServices: AdminService,
     private modalController: ModalController,
     public popoverController: PopoverController,
     private navCtrl: NavController,
@@ -43,13 +51,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.menu.enable(true);
     //this.router.navigate(["home/map"]);
-    this.authService.user$.subscribe((user) => {
-      console.log('current user: ', user);
-      this.userProfile = user;
-      this.roleName = user.roleName;
-
-    });
-
+    
 
     //Tabs Implementation
     // https://ovpv.me/add-tabs-ionic-4/
@@ -85,11 +87,67 @@ export class HomePage implements OnInit {
     // }
   }
 
+  async ngAfterViewInit() {
+    this.authService.user$.subscribe((user) => {
+      if(user!= null)
+      {
+        console.log('current user: ', user);
+        this.userProfile = user;
+        this.roleName = user.roleName;
+        if(this.userProfile.roleName == 'CartUser') {
+          if(!this.userProfile.isCartActive) {
+            this.isCartActiveData = {
+              isVisible : true,
+              className : 'danger',
+              iconName : 'close-circle'
+            };
+          } else {
+            this.isCartActiveData = {
+              isVisible : true,
+              className : 'success',
+              iconName : 'checkmark-circle'
+            };
+          }
+        }  
+      }
+     });
+  }
 
+  isCartActive() {
+    if(this.userProfile.isCartActive) {
+      this.userProfile.isCartActive = false;
+      this.isCartActiveData = {
+        isVisible : true,
+        className : 'danger',
+        iconName : 'close-circle'
+      };
+    } else {
+      this.userProfile.isCartActive = true;
+      this.isCartActiveData = {
+        isVisible : true,
+        className : 'success',
+        iconName : 'checkmark-circle'
+      };
+    }
+    this.updateUser();
+  }
 
-  // navigateToProfile() {
-  //   this.router.navigateByUrl("/user-profile");
-  // }  
+  updateUser() {
+    this.adminServices.UpdateIsCartActive(this.userProfile.uid, this.userProfile.isCartActive);
+      if(this.userProfile.isCartActive) {
+        this.toastService.present({
+          message: "Cart is now Active.",
+          duration: 3000,
+          color: "success"
+        });
+      } else {
+        this.toastService.present({
+          message: "Cart is now Inactive",
+          duration: 3000,
+          color: "warning"
+        });
+      }
+  }
 
   requestFailed(error: any) {
     this.loadingService.dismiss();
