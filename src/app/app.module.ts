@@ -28,6 +28,8 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ProductRequestPageModule } from './pages/maps/product-request/product-request.module';
 import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx';
 import { FirebaseProvider } from 'src/mock.providers';
+import { Network } from '@ionic-native/network/ngx';
+import { NetworkService } from './services/network/network.service';
 
 @NgModule({
   declarations: [AppComponent, UserProfilePopoverComponent],
@@ -52,8 +54,8 @@ import { FirebaseProvider } from 'src/mock.providers';
     GooglePlus,
     NativeStorage,
     AndroidPermissions,
-    Geolocation, FirebaseAuthentication,
-    LocationAccuracy, Diagnostic, FirebaseProvider,
+    Geolocation, FirebaseAuthentication, Network, NetworkService,
+    LocationAccuracy, Diagnostic, FirebaseProvider, 
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 
   ],

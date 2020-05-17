@@ -20,5 +20,4 @@ export class Location {
     public latitude?: string;
     public longitude?: string;
     public timestamp: Date;
-
 }

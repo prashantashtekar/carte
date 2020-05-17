@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Platform, MenuController, ToastController, NavController } from '@ionic/angular';
+import { Platform, MenuController, ToastController, NavController, Events } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -11,6 +11,10 @@ import { Router } from '@angular/router';
 import { LoadingService } from './services/loading/loading.service';
 import { ToastService } from './services/toast/toast.service';
 import { AlertService } from './services/alert/alert.service';
+import { Network } from '@ionic-native/network/ngx';
+import { NetworkService } from './services/network/network.service';
+import { debounceTime } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-root',
@@ -51,6 +55,7 @@ export class AppComponent {
   dark = false;
   userEmail: string;
   roleName: string = "";
+  isConnected: boolean;
   constructor(
     private menu: MenuController,
     private platform: Platform,
@@ -59,11 +64,12 @@ export class AppComponent {
     private statusBar: StatusBar, private navCtrl: NavController,
     public authService: AuthService, private loadingService: LoadingService,
     private toastService: ToastService, private alertService: AlertService,
-    private androidPermissions: AndroidPermissions
+    private androidPermissions: AndroidPermissions,
+    private network: Network, public networkService: NetworkService,
   ) {
 
     platform.ready().then(() => {
-  
+
       //TODO://Remove comment
       // androidPermissions.requestPermissions(
       //   [
@@ -74,17 +80,41 @@ export class AppComponent {
       //     androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE,
       //   ]
       // );
+    //  this.networkService.initializeNetworkEvents();
+
     })
     this.initializeApp();
   }
   ngOnInit() {
-    this.authService.user$.subscribe((user) => {
-      this.userEmail = user.email;
-      this.roleName = user.roleName;
-    });
+    // this.authService.user$.subscribe((user) => {
+    //   this.userEmail = user.email;
+    //   this.roleName = user.roleName;
+    // });
+   
   }
 
+  ngAfterViewInit()
+  {
+   // this.networkSubscriber();
+  }
 
+  // networkSubscriber(): void {
+  //   this.networkService
+  //     .getNetworkStatus()
+  //     .pipe(debounceTime(300))
+  //     .subscribe((connected: boolean) => {
+  //       this.isConnected = connected;
+  //       console.log('[Home] isConnected', this.isConnected);
+
+  //       this.toastService.present({
+  //         message: '[Home] isConnected' + this.isConnected,
+  //         duration: 3000,
+  //         color: "danger"
+  //       });
+
+  //       //this.handleNotConnected(connected);
+  //     });
+  // }
   showMenu() {
     return (this.roleName === 'SuperAdmin' || this.roleName === 'Admin')
   }
