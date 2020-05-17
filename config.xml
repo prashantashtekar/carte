@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.astek.carte" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>MyApp</name>
-    <description>CartE app.</description>
-    <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <name>CartE</name>
+    <description>CartE app</description>
+    <author email="info@astek.in" href="http://astek.in/">Astek Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AuthService } from './services/auth/auth.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+
 import { Router } from '@angular/router';
 import { LoadingService } from './services/loading/loading.service';
 import { ToastService } from './services/toast/toast.service';
@@ -22,7 +23,7 @@ export class AppComponent {
       title: 'Home',
       url: '/home/map',
       icon: 'map',
-      access: ['CartUser', 'Customer','Admin', 'SuperAdmin'],
+      access: ['CartUser', 'Customer', 'Admin', 'SuperAdmin'],
     },
     {
       title: 'Administration',
@@ -56,33 +57,33 @@ export class AppComponent {
     private router: Router,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar, private navCtrl: NavController,
-    public authService: AuthService, private loadingService: LoadingService, private toastService: ToastService, private alertService: AlertService,
-    // /  androidPermissions: AndroidPermissions
+    public authService: AuthService, private loadingService: LoadingService,
+    private toastService: ToastService, private alertService: AlertService,
+    private androidPermissions: AndroidPermissions
   ) {
 
-    //     platform.ready().then(() => {
-
-    //       androidPermissions.requestPermissions(
-    //         [
-    //           androidPermissions.PERMISSION.CAMERA, 
-    //           androidPermissions.PERMISSION.CALL_PHONE, 
-    //           androidPermissions.PERMISSION.GET_ACCOUNTS, 
-    //           androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE, 
-    //           androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
-    //         ]
-    //       );
-
-    //  }) 
+    platform.ready().then(() => {
+  
+      //TODO://Remove comment
+      // androidPermissions.requestPermissions(
+      //   [
+      //     androidPermissions.PERMISSION.CAMERA,
+      //     androidPermissions.PERMISSION.CALL_PHONE,
+      //     androidPermissions.PERMISSION.GET_ACCOUNTS,
+      //     androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE,
+      //     androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE,
+      //   ]
+      // );
+    })
     this.initializeApp();
   }
   ngOnInit() {
-
-
     this.authService.user$.subscribe((user) => {
       this.userEmail = user.email;
       this.roleName = user.roleName;
     });
   }
+
 
   showMenu() {
     return (this.roleName === 'SuperAdmin' || this.roleName === 'Admin')
@@ -143,12 +144,12 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-    
+
       this.authService.init();
- 
+
     });
 
-   
+
 
     // this.platform.ready().then(() => {
     //   this.statusBar.styleDefault();

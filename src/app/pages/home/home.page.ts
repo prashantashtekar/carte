@@ -15,6 +15,7 @@ import { User } from 'src/app/interfaces/user';
 import { AdminService } from 'src/app/services/admin/admin.service';
 import { MapsPage } from '../maps/maps.page';
 import { ProductsPage } from '../products/products.page';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 
 @Component({
   selector: "app-home",
@@ -26,9 +27,9 @@ export class HomePage implements OnInit {
   userProfile: User = null;
   roleName: string = ""
   isCartActiveData: any = {
-    isVisible : false,
-    className : 'success',
-    iconName : 'checkmark-circle'
+    isVisible: false,
+    className: 'success',
+    iconName: 'checkmark-circle'
   };
 
   constructor(
@@ -42,16 +43,16 @@ export class HomePage implements OnInit {
     private loadingService: LoadingService,
     private alertService: AlertService,
     private locationService: LocationService,
-    private menu: MenuController,
+    private menu: MenuController, private diagnostic: Diagnostic
   ) {
 
 
   }
 
   ngOnInit() {
-    this.menu.enable(true);
+    // this.menu.enable(true);
     //this.router.navigate(["home/map"]);
-    
+
 
     //Tabs Implementation
     // https://ovpv.me/add-tabs-ionic-4/
@@ -88,45 +89,64 @@ export class HomePage implements OnInit {
   }
 
   async ngAfterViewInit() {
+    this.menu.enable(true);
     this.authService.user$.subscribe((user) => {
-      if(user!= null)
-      {
+      if (user != null) {
         console.log('current user: ', user);
         this.userProfile = user;
         this.roleName = user.roleName;
-        if(this.userProfile.roleName == 'CartUser') {
-          if(!this.userProfile.isCartActive) {
+
+        if (this.userProfile.roleName == 'CartUser') {
+          
+          //TODO://Remove comment
+          // let successCallback = (isAvailable) => { console.log('Is available? ' + isAvailable); }
+          // let errorCallback = (e) => console.error(e);
+          // this.diagnostic.isBluetoothAvailable().then(successCallback, errorCallback);
+
+          // this.diagnostic.getBluetoothState()
+          //   .then((state) => {
+          //     if (state == this.diagnostic.bluetoothState.POWERED_ON) {
+          //       // do something
+          //       console.log(state);
+          //     } else {
+          //       // do something else
+          //       console.log("off");
+          //     }
+          //   }).catch(e => console.error(e));
+
+          if (!this.userProfile.isCartActive) {
             this.isCartActiveData = {
-              isVisible : true,
-              className : 'danger',
-              iconName : 'close-circle'
+              isVisible: true,
+              className: 'danger',
+              iconName: 'close-circle'
             };
           } else {
             this.isCartActiveData = {
-              isVisible : true,
-              className : 'success',
-              iconName : 'checkmark-circle'
+              isVisible: true,
+              className: 'success',
+              iconName: 'checkmark-circle'
             };
           }
-        }  
+        }
+        this.router.navigate(["home/map"]);
       }
-     });
+    });
   }
 
   isCartActive() {
-    if(this.userProfile.isCartActive) {
+    if (this.userProfile.isCartActive) {
       this.userProfile.isCartActive = false;
       this.isCartActiveData = {
-        isVisible : true,
-        className : 'danger',
-        iconName : 'close-circle'
+        isVisible: true,
+        className: 'danger',
+        iconName: 'close-circle'
       };
     } else {
       this.userProfile.isCartActive = true;
       this.isCartActiveData = {
-        isVisible : true,
-        className : 'success',
-        iconName : 'checkmark-circle'
+        isVisible: true,
+        className: 'success',
+        iconName: 'checkmark-circle'
       };
     }
     this.updateUser();
@@ -134,19 +154,19 @@ export class HomePage implements OnInit {
 
   updateUser() {
     this.adminServices.UpdateIsCartActive(this.userProfile.uid, this.userProfile.isCartActive);
-      if(this.userProfile.isCartActive) {
-        this.toastService.present({
-          message: "Cart is now Active.",
-          duration: 3000,
-          color: "success"
-        });
-      } else {
-        this.toastService.present({
-          message: "Cart is now Inactive",
-          duration: 3000,
-          color: "warning"
-        });
-      }
+    if (this.userProfile.isCartActive) {
+      this.toastService.present({
+        message: "Cart is now Active.",
+        duration: 3000,
+        color: "success"
+      });
+    } else {
+      this.toastService.present({
+        message: "Cart is now Inactive",
+        duration: 3000,
+        color: "warning"
+      });
+    }
   }
 
   requestFailed(error: any) {
