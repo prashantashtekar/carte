@@ -11,6 +11,8 @@ export enum ConnectionStatus {
   providedIn: 'root'
 })
 export class NetworkService {
+  //https://forum.ionicframework.com/t/ionic-4-network-check-example-problem/157909/19
+
   private status: BehaviorSubject<ConnectionStatus> = new BehaviorSubject(ConnectionStatus.Offline);
 
   constructor(private network: Network, private toastController: ToastController, private plt: Platform) {

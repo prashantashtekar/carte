@@ -179,7 +179,7 @@ export class AuthService {
     userDoc.set(newUser);
   }
 
-  updateUserDocumentInFirebase(user: User): void {
+  updateUserDocumentInFirebase(user: User) {
     let userDoc: AngularFirestoreDocument<User> = this.afs.doc<User>(`users/${user.uid}`);
     userDoc.update(user);
   }

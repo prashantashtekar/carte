@@ -1,4 +1,4 @@
-import { Component, Inject, ElementRef, ViewChild, AfterViewInit, NgZone, OnInit  } from '@angular/core';
+import { Component, Inject, ElementRef, ViewChild, AfterViewInit, NgZone, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -33,9 +33,9 @@ declare var google: any;
 })
 export class MapsPage implements AfterViewInit {
   @ViewChild('mapCanvas', { static: true }) mapElement: ElementRef;
-  @ViewChild('mySelect',  { static: true }) selectRef: IonSelect;
-  
-  showList: boolean= false;
+  @ViewChild('mySelect', { static: true }) selectRef: IonSelect;
+
+  showList: boolean = false;
   selectedCartUserId: string = '';
   selectedOptions: any = [];
   customAlertOptions: any = {
@@ -60,12 +60,12 @@ export class MapsPage implements AfterViewInit {
   globalMarkerCart: any;
   myCartLocation = {
     lat: 0,
-    lng:0,
+    lng: 0,
   };
 
   constructor(
     @Inject(DOCUMENT) private doc: Document,
-    private authService: AuthService,    
+    private authService: AuthService,
     public adminServices: AdminService,
     public popoverController: PopoverController,
     private loadingService: LoadingService,
@@ -74,7 +74,7 @@ export class MapsPage implements AfterViewInit {
     private router: Router,
     public productService: ProductsService,
     private alertService: AlertService,
-    public modalController: ModalController,
+    public modalController: ModalController,private menu: MenuController,
     public _ngZone: NgZone) {
     this.locationCoords = {
       latitude: "",
@@ -82,23 +82,27 @@ export class MapsPage implements AfterViewInit {
       accuracy: "",
       timestamp: ""
     };
+    this.menu.enable(true);
+
   }
 
   async ngAfterViewInit() {
+    this.menu.enable(true);
 
     this.authService.user$.subscribe((user) => {
-      if(user!= null)
-      {
+      if (user != null) {
         this.userProfile = user;
         //this.userEmail = this.userProfile.email;
         //get requests added by logged in customer
-        if(this.userProfile.roleName == 'Customer') {
-         this.getRequestByUserId();
+        if (this.userProfile.roleName == 'Customer') {
+          this.getRequestByUserId();
         }
+        //Load Map
         this.loadMap();
+        
       }
-     
-     });
+
+    });
 
   }
   //load map
@@ -129,7 +133,7 @@ export class MapsPage implements AfterViewInit {
         
         const mapEle = this.mapElement.nativeElement;
         //get logged in users location as center of map
-        let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude};
+        let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude };
         map = new googleMaps.Map(mapEle, {
           center: center,
           zoom: 16,
@@ -146,7 +150,7 @@ export class MapsPage implements AfterViewInit {
           center: center,
           radius: 1000
         });
-        
+
         //customer marker
         const iconCustomer = {
           url: 'assets/imgs/customer_location.png', // image url
@@ -154,7 +158,7 @@ export class MapsPage implements AfterViewInit {
         };
         //customer marker
         const markerCustomer = new googleMaps.Marker({
-          position: {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude},
+          position: { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude },
           map,
           title: this.userProfile.firstName + ' ' + this.userProfile.lastName,
           icon: iconCustomer
@@ -168,17 +172,17 @@ export class MapsPage implements AfterViewInit {
               scaledSize: new google.maps.Size(50, 50), // scaled size
             };
             const marker = new googleMaps.Marker({
-              position: { lat: +markerData.latitude, lng: +markerData.longitude},
+              position: { lat: +markerData.latitude, lng: +markerData.longitude },
               map,
               title: markerData.name,
               icon: iconCart
             });
 
             //nth km logic here
-            if(markerData != center) {
+            if (markerData != center) {
               marker.addListener('click', () => {
                 let distanceInKM = this.getDistanceFromLatLonInKm(center.lat, center.lng, marker.position.lat(), marker.position.lng());
-                if(distanceInKM <= 2) {
+                if (distanceInKM <= 2) {
                   //show send request modal
                   this.openModal(products, markerData);
                 } else {
@@ -189,19 +193,19 @@ export class MapsPage implements AfterViewInit {
                   });
                 }
               });
-            }   
+            }
           });
         });
-  
+
         googleMaps.event.addListenerOnce(map, 'idle', () => {
           mapEle.classList.add('show-map');
         });
       });// get cart users api ends
-    } else if(this.userProfile.roleName == 'CartUser') {
+    } else if (this.userProfile.roleName == 'CartUser') {
       //load cart user map
       const mapEle = this.mapElement.nativeElement;
         //get logged in users location as center of map
-        let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude};
+        let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude };
         map = new googleMaps.Map(mapEle, {
           center: center,
           zoom: 16,
@@ -222,13 +226,13 @@ export class MapsPage implements AfterViewInit {
         };
         //cart marker
         const markerCart = new googleMaps.Marker({
-          position: {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude},
+          position: { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude },
           map,
           title: this.userProfile.firstName + ' ' + this.userProfile.lastName,
           icon: iconCart
         });
         this.globalMarkerCart = markerCart;
-        
+
         //TODO: loation update logic, move
         // this.myCartLocation = {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude};
         // let sub = interval(1000).subscribe((val) => { this.updateMarkerLocation(); });
@@ -240,19 +244,19 @@ export class MapsPage implements AfterViewInit {
             scaledSize: new google.maps.Size(50, 50), // scaled size
           };
           const marker = new googleMaps.Marker({
-            position: { lat: +markerData.customerLatitude, lng: +markerData.customerLongitude},
+            position: { lat: +markerData.customerLatitude, lng: +markerData.customerLongitude },
             map,
             title: markerData.name,
             icon: iconCustomer
           });
-  
+
           //1km logic here
-          if(markerData != center) {
-              marker.addListener('click', () => {
-                this.selectedCustomer = markerData;
-                this.showRequest(markerData);
-              });
-            }   
+          if (markerData != center) {
+            marker.addListener('click', () => {
+              this.selectedCustomer = markerData;
+              this.showRequest(markerData);
+            });
+          }
         });
       });// get cart users api ends
       googleMaps.event.addListenerOnce(map, 'idle', () => {
@@ -261,17 +265,17 @@ export class MapsPage implements AfterViewInit {
     } else {
       //map section for admin starts here
       this.adminServices.getCartUsers().subscribe((res) => {
-        this.cartUsersList = res;      
-        
+        this.cartUsersList = res;
+
         const mapEle = this.mapElement.nativeElement;
         //get logged in users location as center of map
-        let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude};
+        let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude };
         map = new googleMaps.Map(mapEle, {
           center: center,
           zoom: 16,
           styles: darkStyle,
         });
-        
+
         //admin marker
         const iconAdmin = {
           url: 'assets/imgs/customer_location.png', // image url
@@ -279,7 +283,7 @@ export class MapsPage implements AfterViewInit {
         };
         //admin marker
         const markerAdmin = new googleMaps.Marker({
-          position: {lat: +this.userProfile.latitude, lng: +this.userProfile.longitude},
+          position: { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude },
           map,
           title: this.userProfile.firstName + ' ' + this.userProfile.lastName,
           icon: iconAdmin
@@ -343,10 +347,10 @@ export class MapsPage implements AfterViewInit {
                   infoWindow.setContent(infoContent);  
                   infoWindow.open(map, marker);
               });
-            }   
+            }
           });
         });
-  
+
         googleMaps.event.addListenerOnce(map, 'idle', () => {
           mapEle.classList.add('show-map');
         });
@@ -357,14 +361,14 @@ export class MapsPage implements AfterViewInit {
   //get last customer message
   private getLastCustomerMessage(messages) {
     return messages.filter(e => e.from == 'CUSTOMER')
-    .sort((a,b) => b.dateTime - a.dateTime);
+      .sort((a, b) => b.dateTime - a.dateTime);
   }
 
   //show request to cartist
   async showRequest(request: CustomerRequest) {
     let header = request.customerName;
-    if(request.customerPhoneNumber != ''){
-      header = header + ' ('+request.customerPhoneNumber+')';
+    if (request.customerPhoneNumber != '') {
+      header = header + ' (' + request.customerPhoneNumber + ')';
     }
     let oldMessages = '<b class="secondary">Messages:</b><br>';
     request.messages.forEach(element => {
@@ -375,59 +379,17 @@ export class MapsPage implements AfterViewInit {
       }
     });
     let buttonArray: any;
-    if(request.status == 'REQUESTED') {
+    if (request.status == 'REQUESTED') {
       buttonArray = [{
         text: 'CLOSE',
-        role:'cancel',
-        cssClass:'alert-button-group',
+        role: 'cancel',
+        cssClass: 'alert-button-group',
         handler: (data) => {
-          
+
         }
-      },{
+      }, {
         text: 'REJECT',
-        cssClass:'alert-button-group',
-        handler: (data) => {
-          this.selectedCustomer.messages.push({
-            from: "CARTIST",
-            message: data.inputMessage,
-            dateTime: new Date()
-          });
-          this.rejectRequest();
-      }
-    }, {
-      text: 'PENDING',
-      cssClass:'alert-button-group',
-      handler: (data) => {
-        this.selectedCustomer.messages.push({
-          from: "CARTIST",
-          message: data.inputMessage,
-          dateTime: new Date()
-        });
-        this.pendingRequest();
-      }
-    },{
-      text: 'ACCEPT',
-      cssClass:'alert-button-group',
-      handler: (data) => {
-        this.selectedCustomer.messages.push({
-          from: "CARTIST",
-          message: data.inputMessage,
-          dateTime: new Date()
-        });
-        this.acceptRequest();
-      }
-    }
-      ];
-    } else if(request.status == 'PENDING') {
-      buttonArray = [{
-        text: 'CLOSE',
-        cssClass:'alert-button-group',
-        handler: (data) => {
-          
-        }
-      },{
-        text: 'REJECT',
-        cssClass:'alert-button-group',
+        cssClass: 'alert-button-group',
         handler: (data) => {
           this.selectedCustomer.messages.push({
             from: "CARTIST",
@@ -436,9 +398,51 @@ export class MapsPage implements AfterViewInit {
           });
           this.rejectRequest();
         }
-      },{
+      }, {
+        text: 'PENDING',
+        cssClass: 'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.pendingRequest();
+        }
+      }, {
         text: 'ACCEPT',
-        cssClass:'alert-button-group',
+        cssClass: 'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.acceptRequest();
+        }
+      }
+      ];
+    } else if (request.status == 'PENDING') {
+      buttonArray = [{
+        text: 'CLOSE',
+        cssClass: 'alert-button-group',
+        handler: (data) => {
+
+        }
+      }, {
+        text: 'REJECT',
+        cssClass: 'alert-button-group',
+        handler: (data) => {
+          this.selectedCustomer.messages.push({
+            from: "CARTIST",
+            message: data.inputMessage,
+            dateTime: new Date()
+          });
+          this.rejectRequest();
+        }
+      }, {
+        text: 'ACCEPT',
+        cssClass: 'alert-button-group',
         handler: (data) => {
           this.selectedCustomer.messages.push({
             from: "CARTIST",
@@ -451,13 +455,13 @@ export class MapsPage implements AfterViewInit {
     } else {
       buttonArray = [{
         text: 'CLOSE',
-        cssClass:'alert-button-group',
+        cssClass: 'alert-button-group',
         handler: (data) => {
-          
+
         }
-      },{
+      }, {
         text: 'REJECT',
-        cssClass:'alert-button-group',
+        cssClass: 'alert-button-group',
         handler: (data) => {
           this.selectedCustomer.messages.push({
             from: "CARTIST",
@@ -466,9 +470,9 @@ export class MapsPage implements AfterViewInit {
           });
           this.rejectRequest();
         }
-      },{
+      }, {
         text: 'UPDATE',
-        cssClass:'alert-button-group',
+        cssClass: 'alert-button-group',
         handler: (data) => {
           this.selectedCustomer.messages.push({
             from: "CARTIST",
@@ -492,18 +496,18 @@ export class MapsPage implements AfterViewInit {
         }
       ],
       buttons: buttonArray
-  });
-  }
-  
-  //open send request modal
-  async openModal(products: Product[], markerData : User) {
-    const modal = await this.modalController.create({
-    component: ProductRequestPage,
-    componentProps: { products: products, user : markerData, customerRequests: this.customerRequestList }
     });
-    modal.onDidDismiss().then(data=>{
+  }
+
+  //open send request modal
+  async openModal(products: Product[], markerData: User) {
+    const modal = await this.modalController.create({
+      component: ProductRequestPage,
+      componentProps: { products: products, user: markerData, customerRequests: this.customerRequestList }
+    });
+    modal.onDidDismiss().then(data => {
       console.log(data);
-      })
+    })
     return await modal.present();
   }
 
@@ -559,7 +563,7 @@ export class MapsPage implements AfterViewInit {
 
   //update marker position on map
   updateMarkerLocation() {
-    this.myCartLocation = {lat:this.myCartLocation.lat+0.0001, lng:this.myCartLocation.lng+0.0001 };
+    this.myCartLocation = { lat: this.myCartLocation.lat + 0.0001, lng: this.myCartLocation.lng + 0.0001 };
     this.globalMarkerCart.setPosition(this.myCartLocation);
   }
 
@@ -568,21 +572,21 @@ export class MapsPage implements AfterViewInit {
     window["angularComponentRef"] = null;
   }
 
-  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in km
-    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = this.deg2rad(lon2-lon1); 
-    var a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = this.deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return d;
   }
 
   deg2rad(deg) {
-    return deg * (Math.PI/180)
+    return deg * (Math.PI / 180)
   }
 }
 

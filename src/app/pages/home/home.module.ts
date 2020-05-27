@@ -30,11 +30,15 @@ const routes: Routes = [
       {
         path: 'history',
         loadChildren: () => import('../history/history.module').then(m => m.HistoryPageModule)
+      },
+      {
+        path: 'ride',
+        loadChildren: () => import('../bluetooth/bluetooth.module').then(m => m.BluetoothPageModule)
       }
     ]
   },
   {
-    path:'',
+    path: '',
     redirectTo: "/home/map",
     pathMatch: "full"
   }

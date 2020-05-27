@@ -5,13 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CustomerRequestPage } from './customer-request.page';
-import { CallNumber } from '@ionic-native/call-number/ngx';
+import { BluetoothPage } from './bluetooth.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: CustomerRequestPage
+    component: BluetoothPage
   }
 ];
 
@@ -22,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CustomerRequestPage]
+  declarations: [BluetoothPage]
 })
-export class CustomerRequestPageModule { }
+export class BluetoothPageModule {}

@@ -16,6 +16,12 @@ import { AdminService } from 'src/app/services/admin/admin.service';
 import { MapsPage } from '../maps/maps.page';
 import { ProductsPage } from '../products/products.page';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import {
+  BackgroundGeolocation,
+  BackgroundGeolocationConfig,
+  BackgroundGeolocationResponse,
+  BackgroundGeolocationEvents
+} from "@ionic-native/background-geolocation/ngx";
 
 @Component({
   selector: "app-home",
@@ -42,15 +48,16 @@ export class HomePage implements OnInit {
     private navCtrl: NavController,
     private loadingService: LoadingService,
     private alertService: AlertService,
-    private locationService: LocationService,
-    private menu: MenuController, private diagnostic: Diagnostic
+    private locationService: LocationService, private backgroundGeolocation: BackgroundGeolocation,
+    private menu: MenuController, private diagnostic: Diagnostic,
+    //  private backgroundGeolocation: BackgroundGeolocation
   ) {
 
-
+    this.menu.enable(true);
   }
 
   ngOnInit() {
-    // this.menu.enable(true);
+    this.menu.enable(true);
     //this.router.navigate(["home/map"]);
 
 
@@ -88,6 +95,61 @@ export class HomePage implements OnInit {
     // }
   }
 
+  startBackgroundGeolocation(user: User) {
+    const config: BackgroundGeolocationConfig = {
+      desiredAccuracy: 10,
+      stationaryRadius: 20,
+      distanceFilter: 30,
+      debug: false, //  enable this hear sounds for background-geolocation life-cycle.
+      stopOnTerminate: false // enable this to clear background location settings when the app terminates
+    };
+
+    this.backgroundGeolocation.configure(config).then(() => {
+      this.backgroundGeolocation
+        .on(BackgroundGeolocationEvents.location)
+        .subscribe((location: BackgroundGeolocationResponse) => {
+          console.log(location);
+          this.sendGPS(location, user);
+          // IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+          // and the background-task may be completed.  You must do this regardless if your operations are successful or not.
+          // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+        });
+    });
+
+    // start recording location
+    this.backgroundGeolocation.start();
+
+    // If you wish to turn OFF background-tracking, call the #stop method.
+    //this.backgroundGeolocation.stop();
+  }
+
+  sendGPS(location, user: User) {
+    if (location.speed == undefined) {
+      location.speed = 0;
+    }
+    let timestamp = new Date(location.time);
+    //Update lat-long,location
+    user.latitude = location.latitude;
+    user.longitude = location.longitude;
+    user.location.push({ "timestamp": timestamp, "latitude": location.latitude, "longitude": location.longitude })
+    const userFormData: User = Object.assign({}, user);
+    console.log("updated user");
+    console.log(userFormData);
+    this.authService.updateUserDocumentInFirebase(userFormData);
+    //.subscribe(data => {
+    //   console.log(data.status);
+    //   console.log(data.data); // data received by server
+    //   console.log(data.headers);
+    //   this.backgroundGeolocation.finish(); // FOR IOS ONLY
+    // }).catch(error => {
+    //   console.log(error.status);
+    //   console.log(error.error); // error message as string
+    //   console.log(error.headers);
+    //   this.backgroundGeolocation.finish(); // FOR IOS ONLY
+    // });
+  }
+
+
   async ngAfterViewInit() {
     this.menu.enable(true);
     this.authService.user$.subscribe((user) => {
@@ -97,7 +159,10 @@ export class HomePage implements OnInit {
         this.roleName = user.roleName;
 
         if (this.userProfile.roleName == 'CartUser') {
-          
+          //Set Backgroung location
+          console.log("Seting background location + user");
+          console.log(this.userProfile);
+          this.startBackgroundGeolocation(this.userProfile)
           //TODO://Remove comment
           // let successCallback = (isAvailable) => { console.log('Is available? ' + isAvailable); }
           // let errorCallback = (e) => console.error(e);
