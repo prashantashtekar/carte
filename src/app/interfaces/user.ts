@@ -16,7 +16,6 @@ export class User {
 }
 
 export class Location {
-    public uid: string;
     public latitude?: string;
     public longitude?: string;
     public timestamp: Date;

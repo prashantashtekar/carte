@@ -14,6 +14,7 @@ import { AlertService } from './services/alert/alert.service';
 import { Network } from '@ionic-native/network/ngx';
 import { NetworkService } from './services/network/network.service';
 import { debounceTime } from 'rxjs/operators';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 
 @Component({
@@ -56,6 +57,9 @@ export class AppComponent {
   userEmail: string;
   roleName: string = "";
   isConnected: boolean;
+  roleWiseSideNavkeys: string[] = [];
+  roleWiseSideNavItems!: any;
+
   constructor(
     private menu: MenuController,
     private platform: Platform,
@@ -65,7 +69,7 @@ export class AppComponent {
     public authService: AuthService, private loadingService: LoadingService,
     private toastService: ToastService, private alertService: AlertService,
     private androidPermissions: AndroidPermissions,
-    private network: Network, public networkService: NetworkService,
+    private network: Network, public networkService: NetworkService, private backgroundMode: BackgroundMode
   ) {
 
     platform.ready().then(() => {
@@ -80,7 +84,7 @@ export class AppComponent {
       //     androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE,
       //   ]
       // );
-    //  this.networkService.initializeNetworkEvents();
+      //  this.networkService.initializeNetworkEvents();
 
     })
     this.initializeApp();
@@ -90,14 +94,15 @@ export class AppComponent {
     //   this.userEmail = user.email;
     //   this.roleName = user.roleName;
     // });
-   
+
   }
 
-  ngAfterViewInit()
-  {
-   // this.networkSubscriber();
-  }
+  ngAfterViewInit() {
+    //TODO:Uncomment this - network service ON/Off
+    // this.networkSubscriber();
 
+  }
+  //TODO:Uncomment This - for network on/off status
   // networkSubscriber(): void {
   //   this.networkService
   //     .getNetworkStatus()
@@ -174,8 +179,45 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
+      //auth service init
       this.authService.init();
+      //cordova-plugin-background-mode
+      this.backgroundMode.enable();
+      this.backgroundMode.on("activate").subscribe(() => {
+        this.backgroundMode.disableWebViewOptimizations();
+      });
+
+      this.authService.user$.subscribe((user) => {
+        if (user != null) {
+          console.log('current user: ', user);
+          this.roleName = user.roleName;
+        }
+      });
+      //TODO: Menu as per roles
+      // this.authService.user$.subscribe((user) => {
+      //   if (user != null) {
+      //     console.log('current user: ', user);
+      //     this.roleName = user.roleName;
+
+      //     let sideNavItemsCopy = JSON.parse(JSON.stringify(this.appPages));
+      //     for (var key in this.appPages) {
+      //       this.appPages[key].access.forEach((item, index, object) => {
+      //         if (this.appPages[key].access.includes(this.roleName)) {
+      //           //If user has access to the any of the submenus,push it into roleWiseSideNavKeys
+      //           if (this.roleWiseSideNavkeys.indexOf(key) === -1) {
+      //             this.roleWiseSideNavkeys.push(key);
+      //           }
+      //         }
+      //         else {
+      //           //User has no rights so remove submenu from copied object
+      //           sideNavItemsCopy.access.splice(index, 1)
+      //         }
+      //       })
+
+      //     }
+      //     this.roleWiseSideNavItems = sideNavItemsCopy;
+      //   }
+      // });
 
     });
 
@@ -186,4 +228,5 @@ export class AppComponent {
     //   this.splashScreen.hide();
     // });
   }
+
 }

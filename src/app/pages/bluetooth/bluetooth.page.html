@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Ride</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list padding>
+      <ion-button expand="block"
+                  (click)="startScanning()">scan</ion-button>
+      <ion-list-header>
+          Paired Devices
+      </ion-list-header>
+      <ion-item *ngFor="let device of pairedDevices">
+          {{device.name}}
+      </ion-item>
+      <ion-button expand="block"
+                  (click)="disconnect()">Disconnect</ion-button>
+      <ion-list-header>
+          availlable Devices
+      </ion-list-header>
+      <ion-item *ngFor='let device of unpairedDevices'>
+          <span (click)="selectDevice(device.id)">
+              {{device.name || device.address}}
+          </span>
+      </ion-item>
+      <ion-spinner name="crescent"
+                   *ngIf="gettingDevices"></ion-spinner>
+  </ion-list>
+</ion-content>

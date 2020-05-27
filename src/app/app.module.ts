@@ -22,7 +22,6 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationAccuracy } from '@ionic-native/location-accuracy/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ProductRequestPageModule } from './pages/maps/product-request/product-request.module';
@@ -30,6 +29,11 @@ import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ng
 import { FirebaseProvider } from 'src/mock.providers';
 import { Network } from '@ionic-native/network/ngx';
 import { NetworkService } from './services/network/network.service';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @NgModule({
   declarations: [AppComponent, UserProfilePopoverComponent],
@@ -54,8 +58,16 @@ import { NetworkService } from './services/network/network.service';
     GooglePlus,
     NativeStorage,
     AndroidPermissions,
-    Geolocation, FirebaseAuthentication, Network, NetworkService,
-    LocationAccuracy, Diagnostic, FirebaseProvider, 
+    FirebaseAuthentication,
+    Network,
+    NetworkService,
+    LocationAccuracy,
+    Diagnostic,
+    FirebaseProvider,
+    BluetoothSerial,
+    BackgroundGeolocation,
+    BackgroundMode,
+    Geolocation, CallNumber,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 
   ],

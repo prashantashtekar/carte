@@ -13,7 +13,8 @@ const routes: Routes = [
   { path: 'user-profile-modal', loadChildren: './pages/user-profile-modal/user-profile-modal.module#UserProfileModalPageModule' },
   { path: 'admin', loadChildren: './pages/admin/admin.module#AdminPageModule' },   
   { path: 'history', loadChildren: './pages/history/history.module#HistoryPageModule' },
-  { path: 'login-phone', loadChildren: './pages/auth/login-phone/login-phone.module#LoginPhonePageModule' },
+  { path: 'login-phone', loadChildren: './pages/auth/login-phone/login-phone.module#LoginPhonePageModule' },  { path: 'bluetooth', loadChildren: './pages/bluetooth/bluetooth.module#BluetoothPageModule' },
+
 ];
 
 
