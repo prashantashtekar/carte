@@ -124,7 +124,7 @@ export class MapsPage implements AfterViewInit {
     //draw map on basis of roles
     let map;
     if(this.userProfile.roleName == 'Customer') {
-      this.adminServices.getCartUsers().subscribe((res) => {
+      this.adminServices.getActiveCartUsers().subscribe((res) => {
         this.cartUsersList = res;      
         
         const mapEle = this.mapElement.nativeElement;
@@ -199,9 +199,7 @@ export class MapsPage implements AfterViewInit {
       });// get cart users api ends
     } else if(this.userProfile.roleName == 'CartUser') {
       //load cart user map
-      this.customerRequestService.getRequestsByCartUser(this.userProfile.uid).subscribe((res) => {
-        this.customerRequestList = res;      
-        const mapEle = this.mapElement.nativeElement;
+      const mapEle = this.mapElement.nativeElement;
         //get logged in users location as center of map
         let center = { lat: +this.userProfile.latitude, lng: +this.userProfile.longitude};
         map = new googleMaps.Map(mapEle, {
@@ -209,6 +207,13 @@ export class MapsPage implements AfterViewInit {
           zoom: 16,
           styles: darkStyle,
         });
+
+      this.customerRequestService.getRequestsByCartUser(this.userProfile.uid).subscribe((res) => {
+        var data =  res as CustomerRequest[]; 
+        
+        this.customerRequestList = data.filter(x=>x.dateRequested == new Date().toDateString()
+          || x.dateRequested == new Date(new Date().getDate() -1).toDateString());      
+        
         
         //cart marker
         const iconCart = {
@@ -249,12 +254,12 @@ export class MapsPage implements AfterViewInit {
               });
             }   
         });
-  
-        googleMaps.event.addListenerOnce(map, 'idle', () => {
-          mapEle.classList.add('show-map');
-        });
       });// get cart users api ends
+      googleMaps.event.addListenerOnce(map, 'idle', () => {
+        mapEle.classList.add('show-map');
+      });
     } else {
+      //map section for admin starts here
       this.adminServices.getCartUsers().subscribe((res) => {
         this.cartUsersList = res;      
         
@@ -283,50 +288,58 @@ export class MapsPage implements AfterViewInit {
         this.cartUsersList.forEach((markerData: any) => {
           //markerData means cartUser
           //TODO: get cart user todays coordinates
-          var flightPlanCoordinates = [
-            {lat: 37.772, lng: -122.214},
-            {lat: 21.291, lng: -157.821},
-            {lat: -18.142, lng: 178.431},
-            {lat: -27.467, lng: 153.027}
-          ];
-          var flightPath = new google.maps.Polyline({
-            path: flightPlanCoordinates,
-            geodesic: true,
-            strokeColor: '#FF0000',
-            strokeOpacity: 1.0,
-            strokeWeight: 2
-          });
-  
-          flightPath.setMap(map);
-
+          
+          // var flightPlanCoordinates = [
+          //   {lat: 37.772, lng: -122.214},
+          //   {lat: 21.291, lng: -157.821},
+          //   {lat: -18.142, lng: 178.431},
+          //   {lat: -27.467, lng: 153.027}
+          // ];
+          //TODO: check below code to draw path
+          //
+          var cartUserLocations = [];
+          if(markerData.location.length > 0) {
+            markerData.location.forEach(ele => {
+              cartUserLocations.push({lat: +ele.latitude, lng: +ele.longitude});
+            });
+            var cartPath = new google.maps.Polyline({
+              path: cartUserLocations,
+              geodesic: true,
+              strokeColor: '#FF0000',
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+            });
+    
+            cartPath.setMap(map);
+          }
           
           const infoWindow = new googleMaps.InfoWindow({
-            content:''
+            content: ''
           }); 
           this.productService.getProductsByUser(markerData.uid).subscribe((products) => {
             let infoContent: string = '<h6>' + markerData.firstName + ' ' + markerData.lastName  + '</h6>'
             infoContent = infoContent +'<b><ion-label color="primary">Todays Products:</ion-label></b>'
             infoContent = infoContent +'<br><b>'
-          products.forEach((product: Product)=>{
-            infoContent = infoContent + product.name  +'  ('+ product.price +'  ₹) <br>'
-          });
-          infoContent = infoContent +'</b>'
+            products.forEach((product: Product)=>{
+              infoContent = infoContent + product.name  +'  ('+ product.price +'  ₹) <br>'
+            });
+            infoContent = infoContent +'</b>'
           
-          // icon 
-          const iconCart = {
-            url: 'assets/imgs/cart.png', // image url
-            scaledSize: new google.maps.Size(50, 50), // scaled size
-          };
-          const marker = new googleMaps.Marker({
-            position: { lat: +markerData.latitude, lng: +markerData.longitude},
-            map,
-            title: markerData.name,
-            icon: iconCart
-          });
+            //set cart icon to current position
+            const iconCart = {
+              url: 'assets/imgs/cart.png', // image url
+              scaledSize: new google.maps.Size(50, 50), // scaled size
+            };
+            const marker = new googleMaps.Marker({
+              position: { lat: +markerData.latitude, lng: +markerData.longitude},
+              map,
+              title: markerData.name,
+              icon: iconCart
+            });
   
-          //1km logic here
-          if(markerData != center) {
-              marker.addListener('click', () => {
+            //1km logic here
+            if(markerData != center) {
+                marker.addListener('click', () => {
                   infoWindow.setContent(infoContent);  
                   infoWindow.open(map, marker);
               });
@@ -356,9 +369,9 @@ export class MapsPage implements AfterViewInit {
     let oldMessages = '<b class="secondary">Messages:</b><br>';
     request.messages.forEach(element => {
       if(element.from == 'CUSTOMER') {
-        oldMessages += '<b>Customer:</b> ' + element.message + '<br>';
+        oldMessages += '<div><b>Customer:</b> ' + element.message + '</div>';
       } else {
-        oldMessages += '<b>You:</b> ' + element.message + '<br>';
+        oldMessages += '<div end>' + element.message + ' <b>:You</b></div>';
       }
     });
     let buttonArray: any;

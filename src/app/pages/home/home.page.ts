@@ -156,7 +156,7 @@ export class HomePage implements OnInit {
     this.adminServices.UpdateIsCartActive(this.userProfile.uid, this.userProfile.isCartActive);
     if (this.userProfile.isCartActive) {
       this.toastService.present({
-        message: "Cart is now Active.",
+        message: "Cart is now Active",
         duration: 3000,
         color: "success"
       });

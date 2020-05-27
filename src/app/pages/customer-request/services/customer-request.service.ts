@@ -51,11 +51,12 @@ export class CustomerRequestService {
 
   //get requests by cart user id
   getRequestsByCartUser(cartUserId: string) {
-    //where('dateRequested', '==', new Date().toDateString()).
     this.customerRequestCollection = this.firestore
       .collection('requests', ref => ref
         .where('cartUserId', '==', cartUserId)
-        .where('status', 'in', ['ACCEPTED','REQUESTED', 'PENDING']));
+        .where('status', 'in', ['ACCEPTED','REQUESTED', 'PENDING'])
+        );
+        
     this.customerRequests = this.customerRequestCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {

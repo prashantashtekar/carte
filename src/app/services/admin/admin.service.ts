@@ -14,6 +14,7 @@ export class AdminService {
 
   private cartUsersCollection: AngularFirestoreCollection<User>;
   private cartUsers: Observable<User[]>;
+  private activeCartUsers: Observable<User[]>;
 
   constructor(private firestore: AngularFirestore) { }
 
@@ -78,6 +79,22 @@ export class AdminService {
       })
     );
     return this.cartUsers;
+  }
+
+  getActiveCartUsers() {
+    this.cartUsersCollection = this.firestore.
+      collection('users', ref => ref.where('roleName', '==', 'CartUser')
+      .where('isCartActive','==', true));
+    this.activeCartUsers = this.cartUsersCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        });
+      })
+    );
+    return this.activeCartUsers;
   }
 
   getUserById(id) {
