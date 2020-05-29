@@ -131,22 +131,9 @@ export class HomePage implements OnInit {
     //Update lat-long,location
     user.latitude = location.latitude;
     user.longitude = location.longitude;
-    user.location.push({ "timestamp": timestamp, "latitude": location.latitude, "longitude": location.longitude })
+    user.location.push({ "dateTime":new Date().toDateString() , "timestamp": timestamp, "latitude": location.latitude, "longitude": location.longitude })
     const userFormData: User = Object.assign({}, user);
-    console.log("updated user");
-    console.log(userFormData);
     this.authService.updateUserDocumentInFirebase(userFormData);
-    //.subscribe(data => {
-    //   console.log(data.status);
-    //   console.log(data.data); // data received by server
-    //   console.log(data.headers);
-    //   this.backgroundGeolocation.finish(); // FOR IOS ONLY
-    // }).catch(error => {
-    //   console.log(error.status);
-    //   console.log(error.error); // error message as string
-    //   console.log(error.headers);
-    //   this.backgroundGeolocation.finish(); // FOR IOS ONLY
-    // });
   }
 
 

@@ -215,9 +215,8 @@ export class MapsPage implements AfterViewInit {
       this.customerRequestService.getRequestsByCartUser(this.userProfile.uid).subscribe((res) => {
         var data =  res as CustomerRequest[]; 
         
-        this.customerRequestList = data.filter(x=>x.dateRequested == new Date().toDateString()
+        this.customerRequestList = data.filter(x=> x.dateRequested == new Date().toDateString()
           || x.dateRequested == new Date(new Date().getDate() -1).toDateString());      
-        
         
         //cart marker
         const iconCart = {
@@ -265,6 +264,7 @@ export class MapsPage implements AfterViewInit {
     } else {
       //map section for admin starts here
       this.adminServices.getCartUsers().subscribe((res) => {
+        debugger;
         this.cartUsersList = res;
 
         const mapEle = this.mapElement.nativeElement;
@@ -289,31 +289,22 @@ export class MapsPage implements AfterViewInit {
           icon: iconAdmin
         });
 
-        this.cartUsersList.forEach((markerData: any) => {
+        this.cartUsersList.forEach((markerData: User) => {
           //markerData means cartUser
-          //TODO: get cart user todays coordinates
-          
-          // var flightPlanCoordinates = [
-          //   {lat: 37.772, lng: -122.214},
-          //   {lat: 21.291, lng: -157.821},
-          //   {lat: -18.142, lng: 178.431},
-          //   {lat: -27.467, lng: 153.027}
-          // ];
-          //TODO: check below code to draw path
-          //
+          //get cart user todays coordinates
           var cartUserLocations = [];
-          if(markerData.location.length > 0) {
-            markerData.location.forEach(ele => {
+          if(markerData.location != undefined && markerData.location.length > 0) {
+            
+            markerData.location.filter(e => e.dateTime == new Date().toDateString()).forEach(ele => {
               cartUserLocations.push({lat: +ele.latitude, lng: +ele.longitude});
             });
             var cartPath = new google.maps.Polyline({
               path: cartUserLocations,
               geodesic: true,
-              strokeColor: '#FF0000',
+              strokeColor: this.getRandomColor(), //'#FF0000',
               strokeOpacity: 1.0,
               strokeWeight: 2
             });
-    
             cartPath.setMap(map);
           }
           
@@ -337,17 +328,14 @@ export class MapsPage implements AfterViewInit {
             const marker = new googleMaps.Marker({
               position: { lat: +markerData.latitude, lng: +markerData.longitude},
               map,
-              title: markerData.name,
+              title: markerData.firstName + ' ' + markerData.lastName,
               icon: iconCart
             });
   
-            //1km logic here
-            if(markerData != center) {
                 marker.addListener('click', () => {
                   infoWindow.setContent(infoContent);  
                   infoWindow.open(map, marker);
               });
-            }
           });
         });
 
@@ -356,6 +344,10 @@ export class MapsPage implements AfterViewInit {
         });
       });// get cart users api ends
     }
+  }
+  private getRandomColor() {
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+    return '#'+ randomColor;
   }
 
   //get last customer message
