@@ -45,9 +45,9 @@ export class CustomerRequestPage implements OnInit {
     let className = 'success';
     if(status == 'REJECTED') {
       className = 'danger';
-    } else if (status = 'ACCEPTED') {
+    } else if (status == 'ACCEPTED') {
       className = 'secondary';
-    } else if (status = 'PENDING') {
+    } else if (status == 'PENDING') {
       className = 'warning';
     } 
     return className;
@@ -65,31 +65,35 @@ export class CustomerRequestPage implements OnInit {
         handler: (data) => {
           
         }
-      },{
-        text: 'YES, CALL!',
-        cssClass:'alert-button-group',
-        handler: (data) => {
-          console.log(data);
-        }
-      }]
+      },]
     });
   }
   
   //show messages between customer and cartist
   showMessages(request: CustomerRequest) {
     let oldMessages = '';
+    let isThereMessage = false;
     request.messages.forEach(element => {
       if(element.from == 'CUSTOMER') {
+        isThereMessage = true;
         oldMessages += '<b>Customer:</b> ' + element.message + '<br>';
       } else {
+        isThereMessage = true;
         oldMessages += '<b>You:</b> ' + element.message + '<br>';
       }
     });
-    this.alertService.present({
-      header: 'Messages:',
-      message: oldMessages,
-      buttons: ['OK']
-    });
+    if(isThereMessage){
+      this.alertService.present({
+        header: 'Messages:',
+        message: oldMessages,
+        buttons: ['OK']
+      });
+    } else {
+      this.alertService.present({
+        header: 'No messages found!',
+        buttons: ['OK']
+      });
+    }
   }
 
   //make call

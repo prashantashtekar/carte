@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 // import * as firebase from 'firebase';
-import { AlertController, NavController, LoadingController } from '@ionic/angular';
+import { AlertController, NavController, LoadingController, MenuController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/auth';
 //import {FirebaseX} from '@ionic-native/firebase-x';
 import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx';
@@ -32,6 +32,7 @@ export class LoginPhonePage implements OnInit {
         private afs: AngularFireAuth,
         private loading: LoadingController,
         private authService: AuthService,
+        private menu: MenuController,
         private router: Router) { }
     ngOnInit() {
 
@@ -51,6 +52,7 @@ export class LoginPhonePage implements OnInit {
         this.afs.authState.subscribe(res => {
             if (res && res.uid) {
                 this.uid = res.uid;
+                this.menu.enable(true);
                 this.router.navigate(["/home"]);
             } else {
             }
@@ -100,6 +102,7 @@ export class LoginPhonePage implements OnInit {
                 //TODO: REdirect user to profile page if no user info is found.
                 this.authService.checkUserExist(userDetails.uid, userDetails.phoneNumber);
                 loader.dismiss();
+                this.menu.enable(true);
                 this.goToLogin(success.user.uid)
             }).then().catch(er => {
                 this.presentAlert(er.message)

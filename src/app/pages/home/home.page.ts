@@ -35,7 +35,7 @@ export class HomePage implements OnInit {
   isCartActiveData: any = {
     isVisible: false,
     className: 'success',
-    iconName: 'checkmark-circle'
+    iconName: 'checkmark'
   };
 
   constructor(
@@ -53,11 +53,10 @@ export class HomePage implements OnInit {
     //  private backgroundGeolocation: BackgroundGeolocation
   ) {
 
-    this.menu.enable(true);
+    
   }
 
   ngOnInit() {
-    this.menu.enable(true);
     //this.router.navigate(["home/map"]);
 
 
@@ -138,9 +137,10 @@ export class HomePage implements OnInit {
 
 
   async ngAfterViewInit() {
-    this.menu.enable(true);
+    this.menu.enable(false);
     this.authService.user$.subscribe((user) => {
       if (user != null) {
+        this.menu.enable(true);
         console.log('current user: ', user);
         this.userProfile = user;
         this.roleName = user.roleName;
@@ -170,17 +170,19 @@ export class HomePage implements OnInit {
             this.isCartActiveData = {
               isVisible: true,
               className: 'danger',
-              iconName: 'close-circle'
+              iconName: 'close'
             };
           } else {
             this.isCartActiveData = {
               isVisible: true,
               className: 'success',
-              iconName: 'checkmark-circle'
+              iconName: 'checkmark'
             };
           }
         }
         this.router.navigate(["home/map"]);
+      } else {
+        this.router.navigate(["login"]);
       }
     });
   }
@@ -191,14 +193,14 @@ export class HomePage implements OnInit {
       this.isCartActiveData = {
         isVisible: true,
         className: 'danger',
-        iconName: 'close-circle'
+        iconName: 'close'
       };
     } else {
       this.userProfile.isCartActive = true;
       this.isCartActiveData = {
         isVisible: true,
         className: 'success',
-        iconName: 'checkmark-circle'
+        iconName: 'checkmark'
       };
     }
     this.updateUser();

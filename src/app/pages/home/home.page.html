@@ -6,24 +6,17 @@
     <ion-title>
       Cart E
     </ion-title>    
-    <ion-buttons slot="end">
-      <ion-icon [name]="isCartActiveData.iconName" *ngIf="isCartActiveData.isVisible" (click)="isCartActive()" [color]="isCartActiveData.className" size="large"></ion-icon>
-    </ion-buttons>
+    <ion-fab-button slot="end" *ngIf="isCartActiveData.isVisible" size="small" [color]="isCartActiveData.className">
+      <ion-icon [name]="isCartActiveData.iconName" (click)="isCartActive()" size="large"></ion-icon>
+    </ion-fab-button>
   </ion-toolbar>
 </ion-header>
-
-
 <ion-content padding>
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
         <h3 class="ion-text-center ion-margin-top" color="primary">Welcome to Swapnapurtee</h3>
       </ion-col>
-    </ion-row>
-    <ion-row>
-      <!-- <ion-col class="ion-text-center">
-        Your Registered EmailID : {{userEmail}}
-      </ion-col> -->
     </ion-row>
   </ion-grid>
   

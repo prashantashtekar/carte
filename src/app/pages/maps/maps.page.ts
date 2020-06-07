@@ -182,7 +182,7 @@ export class MapsPage implements AfterViewInit {
             if (markerData != center) {
               marker.addListener('click', () => {
                 let distanceInKM = this.getDistanceFromLatLonInKm(center.lat, center.lng, marker.position.lat(), marker.position.lng());
-                if (distanceInKM <= 2) {
+                 if (distanceInKM <= 2) {
                   //show send request modal
                   this.openModal(products, markerData);
                 } else {
@@ -214,9 +214,10 @@ export class MapsPage implements AfterViewInit {
 
       this.customerRequestService.getRequestsByCartUser(this.userProfile.uid).subscribe((res) => {
         var data =  res as CustomerRequest[]; 
-        
+        var d = new Date();
+        d.setDate(d.getDate()-1);
         this.customerRequestList = data.filter(x=> x.dateRequested == new Date().toDateString()
-          || x.dateRequested == new Date(new Date().getDate() -1).toDateString());      
+          || x.dateRequested == d.toDateString());      
         
         //cart marker
         const iconCart = {
@@ -367,7 +368,7 @@ export class MapsPage implements AfterViewInit {
       if(element.from == 'CUSTOMER') {
         oldMessages += '<div><b>Customer:</b> ' + element.message + '</div>';
       } else {
-        oldMessages += '<div end>' + element.message + ' <b>:You</b></div>';
+        oldMessages += '<div [style]="text-align: right !important;">' + element.message + ' <b>:You</b></div>';
       }
     });
     let buttonArray: any;

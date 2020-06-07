@@ -77,6 +77,7 @@ export class LoginPage implements OnInit {
       .loginWithEmail(email, password)
       .then((res) => {
         if (res.user) {  
+          this.menu.enable(true);
           this.authService.setUser(res.user.uid);       
           this.router.navigateByUrl("/home");
         }

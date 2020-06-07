@@ -1,11 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Request History</ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content class="padding-page">
-  <ion-grid>
+  <!-- <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
         <h3 class="ion-text-center ion-margin-top" color="primary">Request History</h3>
       </ion-col>
     </ion-row>   
-  </ion-grid>
+  </ion-grid> -->
   <ion-card *ngFor="let request of requests; let i = index" 
     (click)="showRequestDetails(request)">
     <ion-card-content>
